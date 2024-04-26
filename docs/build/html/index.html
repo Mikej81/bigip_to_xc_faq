@@ -34,7 +34,8 @@
 <h1>BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips<a class="headerlink" href="#big-ip-to-distributed-cloud-conversion-frequently-asked-questions-and-tips" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<ul class="simple">
+<ol class="arabic simple">
+<li><p>Disclaimer</p></li>
 <li><p>Introduction</p></li>
 <li><p>Disqualifiers</p></li>
 <li><p>Access Policy Manager</p></li>
@@ -43,38 +44,55 @@
 <li><p>APM to XC or Service Chaining</p></li>
 <li><p>API Security</p></li>
 <li><p>QKView - iHealth</p></li>
+</ol>
+<blockquote>
+<div><ol class="arabic simple">
 <li><p>show /ltm profile http global</p></li>
-<li><p>QKView / iHealth – Commands
-- Commands –&gt; UNIX –&gt; TMOS –&gt; tmctl –a(blade)
-- list /ltm virtual all-properties</p></li>
+<li><p>Commands –&gt; UNIX –&gt; TMOS –&gt; tmctl –a(blade)</p></li>
+<li><p>list /ltm virtual all-properties</p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple">
 <li><p>LTM to LbaaS</p></li>
 <li><p>LTM – Customer Edge (CE) Reserved Ports</p></li>
 <li><p>LTM – SNAT (Pooling)</p></li>
 <li><p>LTM – Traffic Group / Floating Self</p></li>
 <li><p>LTM – Custom Monitor Shenanigans</p></li>
 <li><p>QKView / iHealth – Commands</p></li>
-<li><p>QKView / iHealth – Graphs
-- SSL Transactions
-- TMM Client-Side Throughput
-- TMM Server-Side Throughput
-- Throughput</p></li>
-<li><p>iRules
-- RULE_INIT
-- CLIENT_ACCEPTED
-- CLIENTSSL_CLIENTCERT
-- LB_SELECTED &amp; LB_FAILED
-- HTTP_REQUEST
-- HTTP_REQUEST_DATA
-- HTTP_RESPONSE
-- HTTP_RESPONSE_DATA
-- ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED
-- Logging</p></li>
+<li><p>QKView / iHealth – Graphs</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>SSL Transactions</p></li>
+<li><p>TMM Client-Side Throughput</p></li>
+<li><p>TMM Server-Side Throughput</p></li>
+<li><p>Throughput</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>iRules</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>RULE_INIT</p></li>
+<li><p>CLIENT_ACCEPTED</p></li>
+<li><p>CLIENTSSL_CLIENTCERT</p></li>
+<li><p>LB_SELECTED &amp; LB_FAILED</p></li>
+<li><p>HTTP_REQUEST</p></li>
+<li><p>HTTP_REQUEST_DATA</p></li>
+<li><p>HTTP_RESPONSE</p></li>
+<li><p>HTTP_RESPONSE_DATA</p></li>
+<li><p>ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED</p></li>
+<li><p>Logging</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple">
 <li><p>Example Conversions in Terraform</p></li>
 <li><p>AWAF to WAAP</p></li>
 <li><p>Policy Supervisor</p></li>
 <li><p>Customer Edge Sizing</p></li>
 <li><p>Example(s) (Don’t know where to place yet)</p></li>
-</ul>
+</ol>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
@@ -83,30 +101,58 @@
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-<p>## Disclaimer</p>
+</section>
+<section id="disclaimer">
+<h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h1>
 <p>This FAQ is not all inclusive.</p>
-<p>## Introduction</p>
-<p>## Disqualifiers</p>
+</section>
+<section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+</section>
+<section id="disqualifiers">
+<h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
-<p>### Access Policy Manager</p>
+</section>
+<section id="access-policy-manager">
+<h1>Access Policy Manager<a class="headerlink" href="#access-policy-manager" title="Link to this heading">¶</a></h1>
 <p>Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.</p>
-<ul class="simple">
-<li><p>Access services that require Match Across.
-- DTLS - SSLVPN
-- PCOIP – VDI (BLAST works fine)</p></li>
+<ol class="arabic simple">
+<li><p>Access services that require Match Across.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>DTLS - SSLVPN</p></li>
+<li><p>PCOIP – VDI (BLAST works fine)</p></li>
 </ul>
+</div></blockquote>
 <p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
-<p>### Local Traffic Manager</p>
+</section>
+<section id="local-traffic-manager">
+<h1>Local Traffic Manager<a class="headerlink" href="#local-traffic-manager" title="Link to this heading">¶</a></h1>
 <p>There are very few disqualifiers for LTM.</p>
-<ul class="simple">
-<li><p>Load Balancing services that require Match Across.
-- DTLS
-- PCOIP</p></li>
-<li><p>Streaming Profiles. We do not support streaming content today in XC LBs.
-- E.g., Rewriting HTML page content.</p></li>
-<li><p>OneConnect</p></li>
+<ol class="arabic simple">
+<li><p>Load Balancing services that require Match Across.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>DTLS</p></li>
+<li><p>PCOIP</p></li>
 </ul>
-<p>## Tools</p>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>Streaming Profiles. We do not support streaming content today in XC LBs.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>E.g., Rewriting HTML page content.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>OneConnect</p></li>
+</ol>
+</section>
+<section id="tools">
+<h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
 <p>The following are tools available to use today.  It’s important to note that none of these tools are 100%. It is highly recommended to work with an XC Specialist to help in migration from other platforms to XC.</p>
 <ul class="simple">
 <li><p>iHealth: &lt;<a class="reference external" href="https://ihealth2.f5.com/">https://ihealth2.f5.com/</a>&gt;</p></li>
@@ -116,7 +162,9 @@
 <li><p>BIND to XC Conversion tool: &lt;<a class="reference external" href="https://github.com/Mikej81/BINDtoXCDNS">https://github.com/Mikej81/BINDtoXCDNS</a>&gt;</p></li>
 <li><p>Domain Keep-Alive Analyzer: &lt;<a class="reference external" href="https://keepalive.f5-sa.myedgedemo.com/">https://keepalive.f5-sa.myedgedemo.com/</a>&gt;</p></li>
 </ul>
-<p>## APM to XC Service Chaining</p>
+</section>
+<section id="apm-to-xc-service-chaining">
+<h1>APM to XC Service Chaining<a class="headerlink" href="#apm-to-xc-service-chaining" title="Link to this heading">¶</a></h1>
 <p>We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.</p>
 <p>[image]</p>
 </section>
