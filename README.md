@@ -2,49 +2,46 @@
 
 ## Table of Contents
 
-Disclaimer
-Introduction
-Disqualifiers
-Access Policy Manager
-Local Traffic Manager
-Tools
-APM to XC or Service Chaining
-API Security
-QKView - iHealth
-show /ltm profile http global
-QKView / iHealth – Commands
-Commands --> UNIX --> TMOS --> tmctl –a(blade)
-LTM to LbaaS
-LTM – Customer Edge (CE) Reserved Ports
-LTM – SNAT (Pooling)
-LTM – Traffic Group / Floating Self
-LTM – Custom Monitor Shenanigans
-QKView / iHealth – Commands
-QKView / iHealth – Graphs
-SSL Transactions
-TMM Client-Side Throughput
-TMM Server-Side Throughput
-Throughput
-iRules
-QKView / iHealth – Commands
-Commands --> UNIX --> TMOS --> tmctl –a(blade)
-list /ltm virtual all-properties
-iRules
-RULE_INIT
-CLIENT_ACCEPTED
-CLIENTSSL_CLIENTCERT
-LB_SELECTED & LB_FAILED
-HTTP_REQUEST
-HTTP_REQUEST_DATA
-HTTP_RESPONSE
-HTTP_RESPONSE_DATA
-ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED
-Logging
-Example Conversions in Terraform
-AWAF to WAAP
-Policy Supervisor
-Customer Edge Sizing
-Example(s) (Don’t know where to place yet)
+- Disclaimer
+- Introduction
+- Disqualifiers
+- Access Policy Manager
+- Local Traffic Manager
+- Tools
+- APM to XC or Service Chaining
+- API Security
+- QKView - iHealth
+- show /ltm profile http global
+- QKView / iHealth – Commands
+  - Commands --> UNIX --> TMOS --> tmctl –a(blade)
+  - list /ltm virtual all-properties
+- LTM to LbaaS
+- LTM – Customer Edge (CE) Reserved Ports
+- LTM – SNAT (Pooling)
+- LTM – Traffic Group / Floating Self
+- LTM – Custom Monitor Shenanigans
+- QKView / iHealth – Commands
+- QKView / iHealth – Graphs
+  - SSL Transactions
+  - TMM Client-Side Throughput
+  - TMM Server-Side Throughput
+  - Throughput
+- iRules
+  - RULE_INIT
+  - CLIENT_ACCEPTED
+  - CLIENTSSL_CLIENTCERT
+  - LB_SELECTED & LB_FAILED
+  - HTTP_REQUEST
+  - HTTP_REQUEST_DATA
+  - HTTP_RESPONSE
+  - HTTP_RESPONSE_DATA
+  - ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED
+  - Logging
+- Example Conversions in Terraform
+- AWAF to WAAP
+- Policy Supervisor
+- Customer Edge Sizing
+- Example(s) (Don’t know where to place yet)
 
 ## Disclaimer
 
