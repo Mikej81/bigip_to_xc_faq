@@ -57,9 +57,7 @@ The following are tools available to use today.  It's important to note that non
 Access Policy Manager
 =====================
 
-Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.
-
-
+APM services are not supported in Distrubuted Cloud today, but Service/Proxy chaining is supported.
 
 AWAF to WAAP
 ============
