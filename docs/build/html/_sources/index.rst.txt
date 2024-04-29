@@ -10,45 +10,45 @@ BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips
    :maxdepth: 2
    :caption: Contents:
 
-#. Disclaimer
-#. Introduction
-#. Disqualifiers
-#. Access Policy Manager
-#. Local Traffic Manager
-#. Tools
-#. APM to XC or Service Chaining
-#. API Security
-#. QKView - iHealth
-  *  show /ltm profile http global
-  *  Commands -- UNIX -- TMOS -- tmctl -a(blade)
-  *  list /ltm virtual all-properties
-#. LTM to LbaaS
-#. LTM - Customer Edge (CE) Reserved Ports
-#. LTM - SNAT (Pooling)
-#. LTM - Traffic Group / Floating Self
-#. LTM - Custom Monitor Shenanigans
-#. QKView / iHealth - Commands
-#. QKView / iHealth - Graphs
-  * SSL Transactions
-  * TMM Client-Side Throughput
-  * TMM Server-Side Throughput
-  * Throughput
-#. iRules
-  * RULE_INIT
-  * CLIENT_ACCEPTED
-  * CLIENTSSL_CLIENTCERT
-  * LB_SELECTED & LB_FAILED
-  * HTTP_REQUEST
-  * HTTP_REQUEST_DATA
-  * HTTP_RESPONSE
-  * HTTP_RESPONSE_DATA
-  * ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED
-  * Logging
-#. Example Conversions in Terraform
-#. AWAF to WAAP
-#. Policy Supervisor
-#. Customer Edge Sizing
-#. Example(s) (Don’t know where to place yet)
+   #. Disclaimer
+   #. Introduction
+   #. Disqualifiers
+   #. Access Policy Manager
+   #. Local Traffic Manager
+   #. Tools
+   #. APM to XC or Service Chaining
+   #. API Security
+   #. QKView - iHealth
+     *  show /ltm profile http global
+     *  Commands -- UNIX -- TMOS -- tmctl -a(blade)
+     *  list /ltm virtual all-properties
+   #. LTM to LbaaS
+   #. LTM - Customer Edge (CE) Reserved Ports
+   #. LTM - SNAT (Pooling)
+   #. LTM - Traffic Group / Floating Self
+   #. LTM - Custom Monitor Shenanigans
+   #. QKView / iHealth - Commands
+   #. QKView / iHealth - Graphs
+     * SSL Transactions
+     * TMM Client-Side Throughput
+     * TMM Server-Side Throughput
+     * Throughput
+   #. iRules
+     * RULE_INIT
+     * CLIENT_ACCEPTED
+     * CLIENTSSL_CLIENTCERT
+     * LB_SELECTED & LB_FAILED
+     * HTTP_REQUEST
+     * HTTP_REQUEST_DATA
+     * HTTP_RESPONSE
+     * HTTP_RESPONSE_DATA
+     * ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED
+     * Logging
+   #. Example Conversions in Terraform
+   #. AWAF to WAAP
+   #. Policy Supervisor
+   #. Customer Edge Sizing
+   #. Example(s) (Don’t know where to place yet)
 
 Disclaimer
 ==========
@@ -141,30 +141,48 @@ The following ports can not be used when advertising services on a Customer Edge
    :header-rows: 0
 
    * - 22
-     - 99
-   * - 53
-     - 10249
+     - 53 
+   * - 68
+     - 323
+   * - 500
+     - 1067
+   * - 2379
+     - 2380
+   * - 4500
+     - 5355
+   * - 6443
+     - 8005
+   * - 8007
+     - 8087
+   * - 8443
+     - 8444
+   * - 8505
+     - 8507
+   * - 9007
+     - 9090
+   * - 9153
+     - 9999
+   * - 10249
+     - 10250
+   * - 10251
+     - 10252
+   * - 10256
+     - 10257
+   * - 10259
+     - 18091
+   * - 18092
+     - 18093
+   * - 18095
+     - 22222
+   * - 23790
+     - 23791
+   * - 23801
+     - 23802
+   * - 28000 - 32767 (volterra)
+     - 28000 - 32767 (kubernetes) 
 
-+----+-------+
-| 22 | 999   |
-| 53 | 10249 |
-| 68 | 10250 |
-| 323 | 10251 |
-| 500 | 10252 |
-| 1067 | 10256 | 
-| 2379 | 10257 | 
-| 2380 | 10259 | 
-| 4500 | 18091 | 
-| 5355 | 18092 | 
-| 6443 | 18093 | 
-| 8005 | 18095 | 
-| 8007 | 22222 | 
-| 8087 | 23790 | 
-| 8443 | 23791 | 
-| 8444 | 23801 | 
-| 8505 | 23802 | 
-| 8507 | 28000-32767 | 
-| 9007 | | 
-| 9090 | | 
-| 9153 | | 
-+------+-+
+LTM - SNAT Pooling
+==================
+
+Today, XC does not support a traditional SNAT pool type configuration, however, you can scale SNAT based on nodes in a cluster.  So a 3 node cluster will have 3 IPs for SNATTING, if you need more SNAT IPs, then add more nodes. 
+
