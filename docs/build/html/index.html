@@ -36,17 +36,17 @@
             
   <section id="big-ip-to-distributed-cloud-conversion-frequently-asked-questions-and-tips">
 <h1>BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips<a class="headerlink" href="#big-ip-to-distributed-cloud-conversion-frequently-asked-questions-and-tips" title="Link to this heading">¶</a></h1>
+</section>
 <section id="disclaimer">
-<span id="id1"></span><h2>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h2>
+<span id="id1"></span><h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h1>
 <p>This FAQ is not all inclusive.</p>
 </section>
 <section id="introduction">
-<span id="id2"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<span id="id2"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
 </section>
 <section id="disqualifiers">
-<span id="id3"></span><h2>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h2>
+<span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
-</section>
 </section>
 <section id="access-policy-manager">
 <h1>Access Policy Manager<a class="headerlink" href="#access-policy-manager" title="Link to this heading">¶</a></h1>
@@ -97,17 +97,30 @@
 <section id="apm-to-ditributed-cloud-service-chaining">
 <h1>APM to Ditributed Cloud (Service Chaining)<a class="headerlink" href="#apm-to-ditributed-cloud-service-chaining" title="Link to this heading">¶</a></h1>
 <p>We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.</p>
+<p>[image]</p>
+<section id="api-security">
+<h2>API Security<a class="headerlink" href="#api-security" title="Link to this heading">¶</a></h2>
+</section>
 </section>
 <section id="qkview-ihealth">
 <h1>QKView - iHealth<a class="headerlink" href="#qkview-ihealth" title="Link to this heading">¶</a></h1>
+<section id="show-ltm-profile-http-global">
+<h2>show /ltm profile http global<a class="headerlink" href="#show-ltm-profile-http-global" title="Link to this heading">¶</a></h2>
 <p>This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile.</p>
 <p>[image]</p>
 <p>We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects.</p>
+<p>This data is perfect if we are evaluating an API use-case.</p>
+</section>
+<section id="unix-tmos-tmctl-a-blade">
+<h2>UNIX - TMOS - tmctl -a (blade)<a class="headerlink" href="#unix-tmos-tmctl-a-blade" title="Link to this heading">¶</a></h2>
 <p>This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations.</p>
 <p>[image]</p>
 </section>
+</section>
 <section id="ltm-to-load-balancing-as-a-service">
 <h1>LTM to Load Balancing as a Service<a class="headerlink" href="#ltm-to-load-balancing-as-a-service" title="Link to this heading">¶</a></h1>
+<section id="ltm-to-customer-edge">
+<h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
 <table class="docutils align-default" id="id4">
 <caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
@@ -178,7 +191,11 @@
 </tr>
 </tbody>
 </table>
+</section>
+<section id="ltm-snat-pooling">
+<h2>LTM - SNAT Pooling<a class="headerlink" href="#ltm-snat-pooling" title="Link to this heading">¶</a></h2>
 <p>Today, XC does not support a traditional SNAT pool type configuration, however, you can scale SNAT based on nodes in a cluster.  So a 3 node cluster will have 3 IPs for SNATTING, if you need more SNAT IPs, then add more nodes.</p>
+</section>
 </section>
 
 
@@ -201,18 +218,27 @@
   <div>
     <h3><a href="#">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips</a><ul>
+<li><a class="reference internal" href="#">BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips</a></li>
 <li><a class="reference internal" href="#disclaimer">Disclaimer</a></li>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#disqualifiers">Disqualifiers</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#access-policy-manager">Access Policy Manager</a></li>
 <li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a></li>
 <li><a class="reference internal" href="#tools">Tools</a></li>
-<li><a class="reference internal" href="#apm-to-ditributed-cloud-service-chaining">APM to Ditributed Cloud (Service Chaining)</a></li>
-<li><a class="reference internal" href="#qkview-ihealth">QKView - iHealth</a></li>
-<li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a></li>
+<li><a class="reference internal" href="#apm-to-ditributed-cloud-service-chaining">APM to Ditributed Cloud (Service Chaining)</a><ul>
+<li><a class="reference internal" href="#api-security">API Security</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qkview-ihealth">QKView - iHealth</a><ul>
+<li><a class="reference internal" href="#show-ltm-profile-http-global">show /ltm profile http global</a></li>
+<li><a class="reference internal" href="#unix-tmos-tmctl-a-blade">UNIX - TMOS - tmctl -a (blade)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
+<li><a class="reference internal" href="#ltm-to-customer-edge">LTM to Customer Edge</a></li>
+<li><a class="reference internal" href="#ltm-snat-pooling">LTM - SNAT Pooling</a></li>
+</ul>
+</li>
 </ul>
 
   </div>
@@ -234,7 +260,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 11:43:13.
+      Last updated on 2024-04-29 11:45:30.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

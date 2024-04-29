@@ -7,19 +7,19 @@ BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips
 ==========================================================================
 
 .. _disclaimer:
-==========
+
 Disclaimer
 ==========
 
 This FAQ is not all inclusive.
 
 .. _introduction:
-============
+
 Introduction
 ============
 
 .. _disqualifiers:
-=============
+
 Disqualifiers
 =============
 
@@ -80,14 +80,14 @@ APM to Ditributed Cloud (Service Chaining)
 We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.
 
 [image]
-------------
+
 API Security
 ------------
 
 QKView - iHealth
 ================
 
------------------------------
+
 show /ltm profile http global
 -----------------------------
 
@@ -98,7 +98,7 @@ This command will give you a quick snapshot of traffic with a virtual server wit
 We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects. 
 
 This data is perfect if we are evaluating an API use-case. 
-------------------------------
+
 UNIX - TMOS - tmctl -a (blade)
 ------------------------------
 
@@ -109,7 +109,7 @@ This gets us to the TMSTATS collections that span usually beyond the last 30 day
 LTM to Load Balancing as a Service
 ==================================
 
---------------------
+
 LTM to Customer Edge
 --------------------
 
@@ -160,7 +160,7 @@ The following ports can not be used when advertising services on a Customer Edge
    * - 28000 - 32767 (volterra)
      - 28000 - 32767 (kubernetes) 
 
-------------------
+
 LTM - SNAT Pooling
 ------------------
 
