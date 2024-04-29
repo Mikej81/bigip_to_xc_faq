@@ -124,8 +124,12 @@ We covered the disqualifiers, but there are some that will work fine, like servi
 API Security
 ------------
 
+So secure...
+
 LTM to Load Balancing as a Service
 ==================================
+
+Most services will move to Distributed Cloud fairly easily.
 
 Websockets
 ----------
@@ -136,6 +140,8 @@ https://f5cloud.zendesk.com/hc/en-us/articles/18944650914327-How-to-configure-We
 
 LTM as Upstream / Origin
 ------------------------
+
+Occasionally there is a use-case where instead of a Customer Edge on-premises, you want to continue to use a BIG-IP.  This will work as long as proper preparations are made.
 
 HTTP/1.1 & HTTP/2
 ^^^^^^^^^^^^^^^^^
@@ -559,6 +565,8 @@ Pool Selection Based on URI:  https://github.com/Mikej81/xc-app-services-tf/blob
 
 Customer Edge Sizing
 ====================
+
+So big...
 
 Troubleshooting
 ===============
