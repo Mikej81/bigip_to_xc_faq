@@ -19,11 +19,15 @@ classname = "F5 Distributed Cloud"
 sys.path.insert(0, os.path.abspath("."))
 
 year = time.strftime("%Y")
+eventname = "BIG-IP to Distributed Cloud Migration FAQ %s" % (year)
 
 project = 'BIG-IP to XC'
 copyright = '2024, Michael Coleman'
 author = 'Michael Coleman'
 release = '2024'
+
+# The master toctree document.
+master_doc = "index"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -91,3 +95,84 @@ html_last_updated_fmt = "%Y-%m-%d %H:%M:%S"
 
 #extlinks = {"issues": (("%s/issues/%%s" % github_repo), "issue ")}
 html_static_path = ['_static']
+
+cleanname = re.sub("\\W+", "", classname)
+
+# Output file base name for HTML help builder.
+htmlhelp_basename = cleanname + "doc"
+
+# -- Options for LaTeX output ---------------------------------------------
+
+front_cover_image = "front_cover"
+back_cover_image = "back_cover"
+
+front_cover_image_path = os.path.join("_static", front_cover_image + ".png")
+back_cover_image_path = os.path.join("_static", back_cover_image + ".png")
+
+latex_additional_files = [front_cover_image_path, back_cover_image_path]
+
+template = string.Template(open("preamble.tex").read())
+
+latex_contents = r"""
+\frontcoverpage
+\contentspage
+"""
+
+backcover_latex_contents = r"""
+\backcoverpage
+"""
+
+latex_elements = {
+    "papersize": "letterpaper",
+    "pointsize": "10pt",
+    "fncychap": r"\usepackage[Bjornstrup]{fncychap}",
+    "preamble": template.substitute(
+        eventname=eventname,
+        project=project,
+        author=author,
+        frontcoverimage=front_cover_image,
+        backcoverimage=back_cover_image,
+    ),
+    "tableofcontents": latex_contents,
+    "printindex": backcover_latex_contents,
+}
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title,
+#  author, documentclass [howto, manual, or own class]).
+latex_documents = [
+    (
+        master_doc,
+        "%s.tex" % cleanname,
+        "%s Documentation" % classname,
+        "F5 Networks, Inc.",
+        "manual",
+        True,
+    ),
+]
+
+# -- Options for manual page output ---------------------------------------
+
+# One entry per manual page. List of tuples
+# (source start file, name, description, authors, manual section).
+man_pages = [
+    (master_doc, cleanname.lower(), "%s Documentation" % classname, [author], 1)
+]
+
+
+# -- Options for Texinfo output -------------------------------------------
+
+# Grouping the document tree into Texinfo files. List of tuples
+# (source start file, target name, title, author,
+#  dir menu entry, description, category)
+texinfo_documents = [
+    (
+        master_doc,
+        classname,
+        "%s Documentation" % classname,
+        author,
+        classname,
+        classname,
+        "Training",
+    ),
+]
