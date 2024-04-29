@@ -49,6 +49,18 @@
 <span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
 </section>
+<section id="tools">
+<h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
+<p>The following are tools available to use today.  It’s important to note that none of these tools are 100%. It is highly recommended to work with an XC Specialist to help in migration from other platforms to XC.</p>
+<ul class="simple">
+<li><p>iHealth: <a class="reference external" href="https://ihealth2.f5.com/">iHealth</a></p></li>
+<li><p>VS Code Extension: <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">VS Code Extension</a>
+- <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">VS Code Extension Diagnostics</a></p></li>
+<li><p>Policy Supervisor: <a class="reference external" href="https://policysupervisor.io/">Policy Supervisor</a></p></li>
+<li><p>BIND to XC Conversion tool: <a class="reference external" href="https://github.com/Mikej81/BINDtoXCDNS">BIND to XC Conversion tool</a></p></li>
+<li><p>Domain Keep-Alive Analyzer: <a class="reference external" href="https://keepalive.f5-sa.myedgedemo.com/">Domain Keep-Alive Analyzer</a></p></li>
+</ul>
+</section>
 <section id="access-policy-manager">
 <h1>Access Policy Manager<a class="headerlink" href="#access-policy-manager" title="Link to this heading">¶</a></h1>
 <p>Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.</p>
@@ -64,6 +76,30 @@
 <ol class="arabic simple">
 <li><p>NTLM</p></li>
 </ol>
+</section>
+<section id="awaf-to-waap">
+<h1>AWAF to WAAP<a class="headerlink" href="#awaf-to-waap" title="Link to this heading">¶</a></h1>
+<p>Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.</p>
+<p>The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.</p>
+<p>Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.</p>
+<p>Check ASM Logs for activity.</p>
+<section id="bot-defense">
+<h2>Bot Defense<a class="headerlink" href="#bot-defense" title="Link to this heading">¶</a></h2>
+<p>Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.</p>
+</section>
+<section id="id4">
+<h2>Policy Supervisor<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<p>Policy Supervisor can be used to convert BIG-IP Adv. WAF policies to XC WAF policies.</p>
+<p>If you do not have access to Policy Supervisor, you should check out the guidance here:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing">https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing</a></p></li>
+<li><p><a class="reference external" href="https://github.com/f5devcentral/ps-convert">https://github.com/f5devcentral/ps-convert</a></p></li>
+<li><p><a class="reference external" href="https://policysupervisor.io/">https://policysupervisor.io/</a></p></li>
+<li><p><a class="reference external" href="https://policysupervisor.io/convert">https://policysupervisor.io/convert</a></p></li>
+</ul>
+</div></blockquote>
+</section>
 </section>
 <section id="local-traffic-manager">
 <h1>Local Traffic Manager<a class="headerlink" href="#local-traffic-manager" title="Link to this heading">¶</a></h1>
@@ -83,17 +119,9 @@
 <li><p>OneConnect</p></li>
 </ol>
 </section>
-<section id="tools">
-<h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
-<p>The following are tools available to use today.  It’s important to note that none of these tools are 100%. It is highly recommended to work with an XC Specialist to help in migration from other platforms to XC.</p>
-<ul class="simple">
-<li><p>iHealth: <a class="reference external" href="https://ihealth2.f5.com/">iHealth</a></p></li>
-<li><p>VS Code Extension: <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">VS Code Extension</a>
-- <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">VS Code Extension Diagnostics</a></p></li>
-<li><p>Policy Supervisor: <a class="reference external" href="https://policysupervisor.io/">Policy Supervisor</a></p></li>
-<li><p>BIND to XC Conversion tool: <a class="reference external" href="https://github.com/Mikej81/BINDtoXCDNS">BIND to XC Conversion tool</a></p></li>
-<li><p>Domain Keep-Alive Analyzer: <a class="reference external" href="https://keepalive.f5-sa.myedgedemo.com/">Domain Keep-Alive Analyzer</a></p></li>
-</ul>
+<section id="dns">
+<h1>DNS<a class="headerlink" href="#dns" title="Link to this heading">¶</a></h1>
+<p>Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The base format for zones is JSON/YAML, and in some cases cannot be directly imported.</p>
 </section>
 <section id="apm-to-ditributed-cloud-service-chaining">
 <h1>APM to Ditributed Cloud (Service Chaining)<a class="headerlink" href="#apm-to-ditributed-cloud-service-chaining" title="Link to this heading">¶</a></h1>
@@ -315,8 +343,8 @@
 </div>
 </section>
 </section>
-<section id="id4">
-<h1>iRules<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h1>
+<section id="id5">
+<h1>iRules<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h1>
 <p>If not clear, any irules that are performing redirects, header additions, rewrites, or appending values are easily migrated to L7 Routes. If the irules requires things like binary scan, that is something XC does not support today.</p>
 <p>IRules that focus on Access Control based on evaluating IP blocks, client source addresses, etc., are easily migrated to Service Policies.</p>
 <section id="rule-init">
@@ -419,30 +447,6 @@
 <p>Pool Selection Based on URI:  <a class="reference external" href="https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L412">https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L412</a></p>
 </section>
 </section>
-<section id="awaf-to-waap">
-<h1>AWAF to WAAP<a class="headerlink" href="#awaf-to-waap" title="Link to this heading">¶</a></h1>
-<p>Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.</p>
-<p>The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.</p>
-<p>Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.</p>
-<p>Check ASM Logs for activity.</p>
-<section id="bot-defense">
-<h2>Bot Defense<a class="headerlink" href="#bot-defense" title="Link to this heading">¶</a></h2>
-<p>Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.</p>
-</section>
-<section id="id5">
-<h2>Policy Supervisor<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
-<p>Policy Supervisor can be used to convert BIG-IP Adv. WAF policies to XC WAF policies.</p>
-<p>If you do not have access to Policy Supervisor, you should check out the guidance here:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference external" href="https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing">https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing</a></p></li>
-<li><p><a class="reference external" href="https://github.com/f5devcentral/ps-convert">https://github.com/f5devcentral/ps-convert</a></p></li>
-<li><p><a class="reference external" href="https://policysupervisor.io/">https://policysupervisor.io/</a></p></li>
-<li><p><a class="reference external" href="https://policysupervisor.io/convert">https://policysupervisor.io/convert</a></p></li>
-</ul>
-</div></blockquote>
-</section>
-</section>
 <section id="customer-edge-sizing">
 <h1>Customer Edge Sizing<a class="headerlink" href="#customer-edge-sizing" title="Link to this heading">¶</a></h1>
 </section>
@@ -471,9 +475,15 @@
 <li><a class="reference internal" href="#disclaimer">Disclaimer</a></li>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#disqualifiers">Disqualifiers</a></li>
-<li><a class="reference internal" href="#access-policy-manager">Access Policy Manager</a></li>
-<li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a></li>
 <li><a class="reference internal" href="#tools">Tools</a></li>
+<li><a class="reference internal" href="#access-policy-manager">Access Policy Manager</a></li>
+<li><a class="reference internal" href="#awaf-to-waap">AWAF to WAAP</a><ul>
+<li><a class="reference internal" href="#bot-defense">Bot Defense</a></li>
+<li><a class="reference internal" href="#id4">Policy Supervisor</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a></li>
+<li><a class="reference internal" href="#dns">DNS</a></li>
 <li><a class="reference internal" href="#apm-to-ditributed-cloud-service-chaining">APM to Ditributed Cloud (Service Chaining)</a><ul>
 <li><a class="reference internal" href="#api-security">API Security</a></li>
 </ul>
@@ -502,7 +512,7 @@
 <li><a class="reference internal" href="#custom-monitors">Custom Monitors</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">iRules</a><ul>
+<li><a class="reference internal" href="#id5">iRules</a><ul>
 <li><a class="reference internal" href="#rule-init">RULE_INIT</a></li>
 <li><a class="reference internal" href="#client-accepted">CLIENT_ACCEPTED</a></li>
 <li><a class="reference internal" href="#clientssl-clientcert">CLIENTSSL_CLIENTCERT</a></li>
@@ -514,11 +524,6 @@
 <li><a class="reference internal" href="#access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed">ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED</a></li>
 <li><a class="reference internal" href="#logging">Logging</a></li>
 <li><a class="reference internal" href="#example-conversions-in-terraform">Example Conversions in Terraform</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#awaf-to-waap">AWAF to WAAP</a><ul>
-<li><a class="reference internal" href="#bot-defense">Bot Defense</a></li>
-<li><a class="reference internal" href="#id5">Policy Supervisor</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#customer-edge-sizing">Customer Edge Sizing</a></li>
@@ -543,7 +548,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 12:34:17.
+      Last updated on 2024-04-29 12:54:03.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

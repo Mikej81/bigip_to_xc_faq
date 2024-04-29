@@ -27,37 +27,6 @@ Disqualifiers
 
 This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.
 
-Access Policy Manager
-=====================
-
-Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.
-
-#. Access services that require Match Across.
-
-   * DTLS - SSLVPN
-   * PCOIP - VDI BLAST works fine
-
-There are some workable use-cases around Federated Authentication and proxy/service chaining.
-
-#. NTLM
-
-Local Traffic Manager
-=====================
-
-There are very few disqualifiers for LTM.
-
-#. Load Balancing services that require Match Across.
-
-   * DTLS
-   * PCOIP
-
-#. Streaming Profiles. We do not support streaming content today in XC LBs.
-
-   * E.g., Rewriting HTML page content.
-
-#. OneConnect
-
-
 Tools
 =====
 
@@ -75,6 +44,69 @@ The following are tools available to use today.  It's important to note that non
 - Policy Supervisor: `Policy Supervisor <Policy Supervisor_>`_
 - BIND to XC Conversion tool: `BIND to XC Conversion tool <BIND to XC Conversion tool_>`_
 - Domain Keep-Alive Analyzer: `Domain Keep-Alive Analyzer <Domain Keep-Alive Analyzer_>`_
+
+Access Policy Manager
+=====================
+
+Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.
+
+#. Access services that require Match Across.
+
+   * DTLS - SSLVPN
+   * PCOIP - VDI BLAST works fine
+
+There are some workable use-cases around Federated Authentication and proxy/service chaining.
+
+#. NTLM
+
+AWAF to WAAP
+============
+
+Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.
+
+The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.
+
+Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.
+
+Check ASM Logs for activity. 
+
+Bot Defense 
+----------------------
+
+Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.
+
+Policy Supervisor 
+-----------------
+
+Policy Supervisor can be used to convert BIG-IP Adv. WAF policies to XC WAF policies. 
+
+If you do not have access to Policy Supervisor, you should check out the guidance here:  
+
+ - https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing 
+ - https://github.com/f5devcentral/ps-convert  
+ - https://policysupervisor.io/  
+ - https://policysupervisor.io/convert  
+
+Local Traffic Manager
+=====================
+
+There are very few disqualifiers for LTM.
+
+#. Load Balancing services that require Match Across.
+
+   * DTLS
+   * PCOIP
+
+#. Streaming Profiles. We do not support streaming content today in XC LBs.
+
+   * E.g., Rewriting HTML page content.
+
+#. OneConnect
+
+DNS
+===
+
+Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The base format for zones is JSON/YAML, and in some cases cannot be directly imported.
 
 APM to Ditributed Cloud (Service Chaining)
 ==========================================
@@ -454,33 +486,6 @@ Path Rewrites:  https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_
 
 Pool Selection Based on URI:  https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L412   
 
-AWAF to WAAP
-============
-
-Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.
-
-The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.
-
-Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.
-
-Check ASM Logs for activity. 
-
-Bot Defense 
-----------------------
-
-Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.
-
-Policy Supervisor 
------------------
-
-Policy Supervisor can be used to convert BIG-IP Adv. WAF policies to XC WAF policies. 
-
-If you do not have access to Policy Supervisor, you should check out the guidance here:  
-
- - https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing 
- - https://github.com/f5devcentral/ps-convert  
- - https://policysupervisor.io/  
- - https://policysupervisor.io/convert  
 
 Customer Edge Sizing
 ====================
