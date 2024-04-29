@@ -353,8 +353,8 @@ You can also see in the specific irules how many times its even executed (if its
    :align: center
 
 .. image:: ../images/picture8-a.png
-:width: 500px
-:align: center
+   :width: 500px
+   :align: center
 
 Commands
 --------
