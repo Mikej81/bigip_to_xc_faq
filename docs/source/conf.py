@@ -1,3 +1,9 @@
+import os
+import sys
+import time
+import re
+import pkgutil
+import string
 import f5_sphinx_theme
 # Configuration file for the Sphinx documentation builder.
 #
@@ -6,6 +12,13 @@ import f5_sphinx_theme
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+# REQUIRED: Your class/lab name
+classname = "F5 Distributed Cloud"
+
+sys.path.insert(0, os.path.abspath("."))
+
+year = time.strftime("%Y")
 
 project = 'BIG-IP to XC'
 copyright = '2024, Michael Coleman'
@@ -17,6 +30,49 @@ release = '2024'
 
 templates_path = ['_templates']
 exclude_patterns = []
+
+extensions = [
+    "sphinx.ext.todo",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.graphviz",
+    "sphinxcontrib.nwdiag",
+    "sphinx_copybutton",
+    "sphinxcontrib.blockdiag"
+    # "sphinx.ext.autosectionlabel"
+]
+
+graphviz_output_format = "svg"
+graphviz_font = "DejaVu Sans:style=Book"
+graphviz_dot_args = [
+    "-Gfontname='%s'" % graphviz_font,
+    "-Nfontname='%s'" % graphviz_font,
+    "-Efontname='%s'" % graphviz_font,
+]
+
+diag_fontpath = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+diag_html_image_format = "SVG"
+diag_latex_image_format = "PNG"
+diag_antialias = False
+
+blockdiag_fontpath = nwdiag_fontpath = diag_fontpath
+blockdiag_html_image_format = nwdiag_html_image_format = diag_html_image_format
+blockdiag_latex_image_format = nwdiag_latex_image_format = diag_latex_image_format
+blockdiag_antialias = nwdiag_antialias = diag_antialias
+
+eggs_loader = pkgutil.find_loader("sphinxcontrib.spelling")
+found = eggs_loader is not None
+
+if found:
+    extensions += ["sphinxcontrib.spelling"]
+    spelling_lang = "en_US"
+    spelling_word_list_filename = "../wordlist"
+    spelling_show_suggestions = True
+    spelling_ignore_pypi_package_names = False
+    spelling_ignore_wiki_words = True
+    spelling_ignore_acronyms = True
+    spelling_ignore_python_builtins = True
+    spelling_ignore_importable_modules = True
+    spelling_filters = []
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
