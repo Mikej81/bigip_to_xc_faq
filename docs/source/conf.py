@@ -81,7 +81,8 @@ if found:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 # html4_writer = True
-html_theme = "f5_sphinx_theme"
+#html_theme = "f5_sphinx_theme"
+html_theme = "nature"
 html_theme_path = f5_sphinx_theme.get_html_theme_path()
 html_sidebars = {"**": ["searchbox.html", "localtoc.html", "globaltoc.html"]}
 html_theme_options = {
