@@ -157,6 +157,26 @@ The Keep-Alive general header allows the sender to hint about how the connection
 
 Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.
 
+Timeouts can be configured in a a number of locations in the XC Console.  
+
+.. figure:: ../images/lb_timeout.png
+   :width: 700px
+   :align: center
+
+   Load Balancer Timeout.
+   
+.. figure:: ../images/route_timeout.png
+   :width: 700px
+   :align: center
+
+   Route Timeout.
+
+.. figure:: ../images/origin_timeout.png
+   :width: 700px
+   :align: center
+
+   Origin Timeout.
+
 SNAT
 ^^^^
 
@@ -450,7 +470,7 @@ Depending on what is happening during CLIENT_ACCEPTED this event may not be need
 CLIENTSSL_CLIENTCERT
 --------------------
 
-This event is probably not as common outside of mTLS use-cases, and in many cases is just used for logging, but also commonly used to create SSL Session ID’s for Persistence use-cases. While XC does not support SSL Session ID persistence today, it does support mTLS, and it can extract the X.509 attributes and inject into headers to use for similar purposes. 
+This event is probably not as common outside of mTLS use-cases, and in many cases is just used for logging, but also commonly used to create SSL Session ID's for Persistence use-cases. While XC does not support SSL Session ID persistence today, it does support mTLS, and it can extract the X.509 attributes and inject into headers to use for similar purposes. 
 
 If we evaluate the following example:  
 
