@@ -144,6 +144,15 @@ LTM to Customer Edge
 
 The following ports can not be used when advertising services on a Customer Edge. 
 
+.. list-table:: Reserved Ports
+
+* - 22
+  - 99
+* - 53
+  - 10249
+
+  
+
 +----+-------+
 | 22 | 999   |
 | 53 | 10249 |
