@@ -32,32 +32,29 @@
             
   <section id="big-ip-to-distributed-cloud-conversion-frequently-asked-questions-and-tips">
 <h1>BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips<a class="headerlink" href="#big-ip-to-distributed-cloud-conversion-frequently-asked-questions-and-tips" title="Link to this heading">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 <section id="disclaimer">
-<h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h1>
+<span id="id1"></span><h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h1>
 <p>This FAQ is not all inclusive.</p>
 </section>
 <section id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+<span id="id2"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
 </section>
 <section id="disqualifiers">
-<h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
+<span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
 </section>
 <section id="access-policy-manager">
 <h1>Access Policy Manager<a class="headerlink" href="#access-policy-manager" title="Link to this heading">¶</a></h1>
 <p>Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.</p>
 <ol class="arabic simple">
-<li><p>Access services that require Match Across.</p></li>
-</ol>
-<blockquote>
-<div><ul class="simple">
+<li><p>Access services that require Match Across.</p>
+<ul class="simple">
 <li><p>DTLS - SSLVPN</p></li>
-<li><p>PCOIP – VDI (BLAST works fine)</p></li>
+<li><p>PCOIP - VDI BLAST works fine</p></li>
 </ul>
-</div></blockquote>
+</li>
+</ol>
 <p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
 <ol class="arabic simple">
 <li><p>NTLM</p></li>
@@ -67,23 +64,17 @@
 <h1>Local Traffic Manager<a class="headerlink" href="#local-traffic-manager" title="Link to this heading">¶</a></h1>
 <p>There are very few disqualifiers for LTM.</p>
 <ol class="arabic simple">
-<li><p>Load Balancing services that require Match Across.</p></li>
-</ol>
-<blockquote>
-<div><ul class="simple">
+<li><p>Load Balancing services that require Match Across.</p>
+<ul class="simple">
 <li><p>DTLS</p></li>
 <li><p>PCOIP</p></li>
 </ul>
-</div></blockquote>
-<ol class="arabic simple">
-<li><p>Streaming Profiles. We do not support streaming content today in XC LBs.</p></li>
-</ol>
-<blockquote>
-<div><ul class="simple">
+</li>
+<li><p>Streaming Profiles. We do not support streaming content today in XC LBs.</p>
+<ul class="simple">
 <li><p>E.g., Rewriting HTML page content.</p></li>
 </ul>
-</div></blockquote>
-<ol class="arabic simple">
+</li>
 <li><p>OneConnect</p></li>
 </ol>
 </section>
@@ -91,12 +82,12 @@
 <h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
 <p>The following are tools available to use today.  It’s important to note that none of these tools are 100%. It is highly recommended to work with an XC Specialist to help in migration from other platforms to XC.</p>
 <ul class="simple">
-<li><p>iHealth: <cite>https://ihealth2.f5.com/</cite></p></li>
-<li><p>VS Code Extension: <cite>https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5</cite>
-- <cite>https://f5devcentral.github.io/vscode-f5/#/xcDiagnostics</cite></p></li>
-<li><p>Policy Supervisor: <cite>https://policysupervisor.io/</cite></p></li>
-<li><p>BIND to XC Conversion tool: <cite>https://github.com/Mikej81/BINDtoXCDNS</cite></p></li>
-<li><p>Domain Keep-Alive Analyzer: <cite>https://keepalive.f5-sa.myedgedemo.com/</cite></p></li>
+<li><p>iHealth: <a class="reference external" href="https://ihealth2.f5.com/">iHealth</a></p></li>
+<li><p>VS Code Extension: <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">VS Code Extension</a>
+- <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">VS Code Extension Diagnostics</a></p></li>
+<li><p>Policy Supervisor: <a class="reference external" href="https://policysupervisor.io/">Policy Supervisor</a></p></li>
+<li><p>BIND to XC Conversion tool: <a class="reference external" href="https://github.com/Mikej81/BINDtoXCDNS">BIND to XC Conversion tool</a></p></li>
+<li><p>Domain Keep-Alive Analyzer: <a class="reference external" href="https://keepalive.f5-sa.myedgedemo.com/">Domain Keep-Alive Analyzer</a></p></li>
 </ul>
 </section>
 <section id="apm-to-ditributed-cloud-service-chaining">
@@ -128,8 +119,8 @@
 <section id="ltm-to-customer-edge">
 <h1>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h1>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
