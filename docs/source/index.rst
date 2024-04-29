@@ -349,8 +349,12 @@ One of the first things to evaluate with irules, is if they are even being used.
 You can also see in the specific irules how many times its even executed (if its attached) under the irules Statistics. 
 
 .. image:: ../images/picture8.png
-   :width: 700px
+   :width: 500px
    :align: center
+
+.. image:: ../images/picture8-a.png
+:width: 500px
+:align: center
 
 Commands
 --------
