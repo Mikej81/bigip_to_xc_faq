@@ -39,10 +39,11 @@
 </section>
 <section id="disclaimer">
 <span id="id1"></span><h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h1>
-<p>This FAQ is not all inclusive.</p>
+<p>Please note that this FAQ document is intended as a general guide and is not exhaustive. While we strive to provide accurate and up-to-date information, the rapidly evolving nature of cloud technologies means that specific details may change over time. Therefore, this guide should not be considered a substitute for professional advice or detailed consultation relevant to your specific circumstances.</p>
 </section>
 <section id="introduction">
 <span id="id2"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+<p>This semi-comprehensive guide is designed to streamline your migration from F5 BIG-IP to F5 Distributed Cloud.  This document aims to address frequently asked questions that arise during the migration process, offering clear, concise answers and practical insights to ensure a smooth transition.</p>
 </section>
 <section id="disqualifiers">
 <span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
@@ -104,12 +105,71 @@
 </section>
 <section id="qkview-ihealth">
 <h1>QKView - iHealth<a class="headerlink" href="#qkview-ihealth" title="Link to this heading">¶</a></h1>
+<section id="graphs">
+<h2>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h2>
+<section id="ssl-transactions">
+<h3>SSL Transactions<a class="headerlink" href="#ssl-transactions" title="Link to this heading">¶</a></h3>
+<p>[image]</p>
+</section>
+<section id="tmm-client-side-throughput">
+<h3>TMM Client-Side Throughput<a class="headerlink" href="#tmm-client-side-throughput" title="Link to this heading">¶</a></h3>
+<p>The sum throughput of all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA) traffic on the client side. The following fields are represented in bits per second and packets per second:</p>
+<p>Client In: The sum of all ingress traffic</p>
+<p>Client Out: The sum of all egress traffic</p>
+<p>[image]</p>
+</section>
+<section id="tmm-server-side-throughput">
+<h3>TMM Server-Side Throughput<a class="headerlink" href="#tmm-server-side-throughput" title="Link to this heading">¶</a></h3>
+<p>The sum throughput of all TMM and PVA traffic on the server side. The following fields are represented in bits per second and packets per second:</p>
+<p>Server In: The sum of all egress traffic</p>
+<p>Server Out: The sum of all ingress traffic</p>
+<p>[image]</p>
+</section>
+<section id="throughput">
+<h3>Throughput<a class="headerlink" href="#throughput" title="Link to this heading">¶</a></h3>
+<p>The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second:</p>
+<p>In: The ingress traffic to the system through its interfaces</p>
+<p>Out: The egress traffic from the system through its interfaces</p>
+<p>Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth.</p>
+<p>[image]</p>
+</section>
+</section>
+<section id="irules">
+<h2>iRules<a class="headerlink" href="#irules" title="Link to this heading">¶</a></h2>
+<p>One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules.</p>
+<p>[image]</p>
+</section>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
+<section id="list-ltm-virtual-all-properties">
+<h3>list /ltm virtual all-properties<a class="headerlink" href="#list-ltm-virtual-all-properties" title="Link to this heading">¶</a></h3>
+<p>A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”.</p>
+<p>IRules that can be ignored because it’s a checkbox choice in XC are redirects:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">rules</span><span class="w"> </span><span class="k">{</span>
+<span class="w">     </span><span class="o">/</span><span class="nv">Common</span><span class="o">/</span>_sys_https_redirect
+<span class="k">}</span>
+</pre></div>
+</div>
+<p>In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects.</p>
+<p>Let’s look at an irule example, we can see it’s in use, and has had 34k executions in the past 30 days. I’m sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It’s setting the default pool, and if there aren’t any active members, sending it to another page.</p>
+<p>[image]</p>
+<p>This is extremely easy to do with just L7 Routes, and custom error pages.</p>
+<p>In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects.</p>
+<p>[image]</p>
+<p>Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs.</p>
+<p>In the case of this irule, it’s just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.</p>
+<p>[image]
+[image]</p>
+<p>If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options.</p>
+<p>[image]</p>
+</section>
 <section id="show-ltm-profile-http-global">
-<h2>show /ltm profile http global<a class="headerlink" href="#show-ltm-profile-http-global" title="Link to this heading">¶</a></h2>
+<h3>show /ltm profile http global<a class="headerlink" href="#show-ltm-profile-http-global" title="Link to this heading">¶</a></h3>
 <p>This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile.</p>
 <p>[image]</p>
 <p>We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects.</p>
 <p>This data is perfect if we are evaluating an API use-case.</p>
+</section>
 </section>
 <section id="unix-tmos-tmctl-a-blade">
 <h2>UNIX - TMOS - tmctl -a (blade)<a class="headerlink" href="#unix-tmos-tmctl-a-blade" title="Link to this heading">¶</a></h2>
@@ -122,8 +182,8 @@
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id4">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id5">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -192,9 +252,80 @@
 </tbody>
 </table>
 </section>
-<section id="ltm-snat-pooling">
-<h2>LTM - SNAT Pooling<a class="headerlink" href="#ltm-snat-pooling" title="Link to this heading">¶</a></h2>
+<section id="snat-pooling">
+<h2>SNAT Pooling<a class="headerlink" href="#snat-pooling" title="Link to this heading">¶</a></h2>
 <p>Today, XC does not support a traditional SNAT pool type configuration, however, you can scale SNAT based on nodes in a cluster.  So a 3 node cluster will have 3 IPs for SNATTING, if you need more SNAT IPs, then add more nodes.</p>
+</section>
+<section id="traffig-group-floating-self-ip">
+<h2>Traffig Group / Floating Self-IP<a class="headerlink" href="#traffig-group-floating-self-ip" title="Link to this heading">¶</a></h2>
+<p>To create the same scenario as a traffic group or floating self, you can use VRRP.  Check out Harmon’s article here, where he discusses some of the CE design scenarios.  <a class="reference external" href="https://community.f5.com/t5/technical-articles/f5-distributed-cloud-customer-edge-site-deployment-amp-routing/ta-p/319435">https://community.f5.com/t5/technical-articles/f5-distributed-cloud-customer-edge-site-deployment-amp-routing/ta-p/319435</a></p>
+<p>A byproduct of enabling VRRP on your cluster, and creating a common VIP, is that you can also use that common VIP as a default gateway.</p>
+</section>
+<section id="custom-monitors">
+<h2>Custom Monitors<a class="headerlink" href="#custom-monitors" title="Link to this heading">¶</a></h2>
+<p>If you have been relying on custom monitors for routine tasks such as backing up data to an FTP server, sending email reports, or generating alerts based on storage availability. With F5 Distributed Cloud (XC), many of these functions are seamlessly integrated, thanks to our SaaS platform’s built-in scheduled reporting and alert capabilities.</p>
+<p>However, if you need to perform a specific task that isn’t currently supported by XC, such as invoking an API or executing a specialized function, we’ve got you covered. You can easily recreate this functionality in a small container script (for example, using bash) and deploy it as a scheduled task within our virtual Kubernetes environment.</p>
+<p>For instance, if you need to activate a service policy or a network firewall rule at particular times each day, you can set up a cron job in XC. This job will operate on your schedule and interact with the XC API to execute your policies as planned.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CronJob</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batch/v1beta1</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coleman-generic-restcurl</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">restcurl</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cron</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">ves.io/virtual-sites</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">m-coleman/coleman-ves-io-ny-re</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;30</span><span class="nv"> </span><span class="s">10,20</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5&quot;</span><span class="w"> </span><span class="c1"># Every weekday at 10:30, and 20:30 UTC</span>
+<span class="w">  </span><span class="nt">jobTemplate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">metadata</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">restcurl</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cron</span>
+<span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">template</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">metadata</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">ves.io/workload-flavor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tiny</span>
+<span class="w">            </span><span class="nt">ves.io/virtual-sites</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">m-coleman/coleman-ves-io-ny-re</span>
+<span class="w">        </span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Never</span>
+<span class="w">          </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curl-worker</span>
+<span class="w">              </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curlimages/curl:latest</span>
+<span class="w">              </span><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">IfNotPresent</span>
+<span class="w">              </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API_URI</span>
+<span class="w">                  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://&lt;tenant&gt;.console.ves.volterra.io/api/web/namespaces&quot;</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API_TOKEN</span>
+<span class="w">                  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;APIToken</span><span class="nv"> </span><span class="s">&lt;token</span><span class="nv"> </span><span class="s">value&gt;&quot;</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API_METHOD</span>
+<span class="w">                  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;POST&quot;</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API_PAYLOAD</span>
+<span class="w">                  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{&quot;metadata&quot;:</span><span class="nv"> </span><span class="s">{&quot;name&quot;:</span><span class="nv"> </span><span class="s">&quot;service-policy-1&quot;,&quot;namespace&quot;:</span><span class="nv"> </span><span class="s">&quot;namespace&quot;},</span><span class="nv"> </span><span class="s">&quot;spec&quot;:</span><span class="nv"> </span><span class="s">{</span><span class="nv"> </span><span class="s">&quot;deny_all_requests&quot;:</span><span class="nv"> </span><span class="s">{}</span><span class="nv"> </span><span class="s">}</span><span class="nv"> </span><span class="s">}&#39;</span>
+<span class="w">              </span><span class="nt">command</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/bin/sh&quot;</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-ec&quot;</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">                  </span><span class="no">set -o nounset</span>
+<span class="w">                  </span><span class="no">set -o errexit</span>
+<span class="w">                  </span><span class="no">echo &quot;API Call&quot;</span>
+<span class="w">                  </span><span class="no">curl -s -X ${API_METHOD} -H &#39;Content-Type: application/json&#39; -H &quot;Authorization: ${API_TOKEN}&quot; &quot;${API_URI}&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id4">
+<h1>iRules<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h1>
+<p>If not clear, any irules that are performing redirects, header additions, rewrites, or appending values are easily migrated to L7 Routes. If the irules requires things like binary scan, that is something XC does not support today.</p>
+<p>IRules that focus on Access Control based on evaluating IP blocks, client source addresses, etc., are easily migrated to Service Policies.</p>
+<section id="rule-init">
+<h2>RULE_INIT<a class="headerlink" href="#rule-init" title="Link to this heading">¶</a></h2>
+<p>RULE_INIT is generally used to set some static variables for use in the rest of the irule, since we don’t have any programming logic in XC in order to take advantage of this, it can generally be thrown out, but pay attention to any definitions of data groups or things like that so you can understand the irules purpose; is it pulling domain names, is it pulling client ips, etc.</p>
+</section>
+<section id="client-accepted">
+<h2>CLIENT_ACCEPTED<a class="headerlink" href="#client-accepted" title="Link to this heading">¶</a></h2>
+<p>Depending on what is happening during CLIENT_ACCEPTED this event may not be needed, or if there is some complex action requirements it will not be a good possibility for porting. Most customers use this to log client ip/prefix data, or select a pool based on an identifying client attribute, this can be done via L7 Routes.</p>
 </section>
 </section>
 
@@ -230,13 +361,32 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#qkview-ihealth">QKView - iHealth</a><ul>
+<li><a class="reference internal" href="#graphs">Graphs</a><ul>
+<li><a class="reference internal" href="#ssl-transactions">SSL Transactions</a></li>
+<li><a class="reference internal" href="#tmm-client-side-throughput">TMM Client-Side Throughput</a></li>
+<li><a class="reference internal" href="#tmm-server-side-throughput">TMM Server-Side Throughput</a></li>
+<li><a class="reference internal" href="#throughput">Throughput</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#irules">iRules</a></li>
+<li><a class="reference internal" href="#commands">Commands</a><ul>
+<li><a class="reference internal" href="#list-ltm-virtual-all-properties">list /ltm virtual all-properties</a></li>
 <li><a class="reference internal" href="#show-ltm-profile-http-global">show /ltm profile http global</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#unix-tmos-tmctl-a-blade">UNIX - TMOS - tmctl -a (blade)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
 <li><a class="reference internal" href="#ltm-to-customer-edge">LTM to Customer Edge</a></li>
-<li><a class="reference internal" href="#ltm-snat-pooling">LTM - SNAT Pooling</a></li>
+<li><a class="reference internal" href="#snat-pooling">SNAT Pooling</a></li>
+<li><a class="reference internal" href="#traffig-group-floating-self-ip">Traffig Group / Floating Self-IP</a></li>
+<li><a class="reference internal" href="#custom-monitors">Custom Monitors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4">iRules</a><ul>
+<li><a class="reference internal" href="#rule-init">RULE_INIT</a></li>
+<li><a class="reference internal" href="#client-accepted">CLIENT_ACCEPTED</a></li>
 </ul>
 </li>
 </ul>
@@ -260,7 +410,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 11:45:30.
+      Last updated on 2024-04-29 12:07:09.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
