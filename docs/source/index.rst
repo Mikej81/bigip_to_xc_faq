@@ -34,7 +34,7 @@ This is a list of use-cases that can be used to immediately disqualify a migrati
 
 #. NTLM
 
-There are some workable use-cases around Federated Authentication and proxy/service chaining.
+.. note:: There are some workable use-cases around Federated Authentication and proxy/service chaining.
 
 Tools
 =====
@@ -126,6 +126,35 @@ API Security
 
 LTM to Load Balancing as a Service
 ==================================
+
+Websockets
+----------
+
+Websockets are supported for load balancing in Distributed Cloud.  
+
+https://f5cloud.zendesk.com/hc/en-us/articles/18944650914327-How-to-configure-Websockets-correctly-on-F5-XC-platform
+
+LTM as Upstream / Origin
+------------------------
+
+HTTP/1.1 & HTTP/2
+^^^^^^^^^^^^^^^^^
+
+BIG-IP by default uses HTTP/1.1 on profiles.  Distributed Cloud uses HTTP/2 by default.  It is important to ensure that the Origin Pool in XC is configured for HTTP/1.1 when the Upstream is a BIG-IP.
+
+HTTP Keep-Alive & Connection Headers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The Keep-Alive general header allows the sender to hint about how the connection may be used to set a timeout and a maximum amount of requests.
+
+.. warning:: Connection-specific header fields such as Connection and Keep-Alive are prohibited in HTTP/2 and HTTP/3. Chrome and Firefox ignore them in HTTP/2 responses, but Safari conforms to the HTTP/2 specification requirements and does not load any response that contains them.
+
+Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.
+
+SNAT
+^^^^
+
+Distributed Cloud is a SaaS Platform.  BIG-IP is not.  Some applications may be configured to accept client source for persistence or other purposes.  Since the traffic will be proxied, applications been to be enabled for a more modern approach.
 
 
 LTM to Customer Edge

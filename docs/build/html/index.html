@@ -57,7 +57,10 @@
 </li>
 <li><p>NTLM</p></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
+</div>
 </section>
 <section id="tools">
 <h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
@@ -134,6 +137,31 @@
 </section>
 <section id="ltm-to-load-balancing-as-a-service">
 <h1>LTM to Load Balancing as a Service<a class="headerlink" href="#ltm-to-load-balancing-as-a-service" title="Link to this heading">¶</a></h1>
+<section id="websockets">
+<h2>Websockets<a class="headerlink" href="#websockets" title="Link to this heading">¶</a></h2>
+<p>Websockets are supported for load balancing in Distributed Cloud.</p>
+<p><a class="reference external" href="https://f5cloud.zendesk.com/hc/en-us/articles/18944650914327-How-to-configure-Websockets-correctly-on-F5-XC-platform">https://f5cloud.zendesk.com/hc/en-us/articles/18944650914327-How-to-configure-Websockets-correctly-on-F5-XC-platform</a></p>
+</section>
+<section id="ltm-as-upstream-origin">
+<h2>LTM as Upstream / Origin<a class="headerlink" href="#ltm-as-upstream-origin" title="Link to this heading">¶</a></h2>
+<section id="http-1-1-http-2">
+<h3>HTTP/1.1 &amp; HTTP/2<a class="headerlink" href="#http-1-1-http-2" title="Link to this heading">¶</a></h3>
+<p>BIG-IP by default uses HTTP/1.1 on profiles.  Distributed Cloud uses HTTP/2 by default.  It is important to ensure that the Origin Pool in XC is configured for HTTP/1.1 when the Upstream is a BIG-IP.</p>
+</section>
+<section id="http-keep-alive-connection-headers">
+<h3>HTTP Keep-Alive &amp; Connection Headers<a class="headerlink" href="#http-keep-alive-connection-headers" title="Link to this heading">¶</a></h3>
+<p>The Keep-Alive general header allows the sender to hint about how the connection may be used to set a timeout and a maximum amount of requests.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Connection-specific header fields such as Connection and Keep-Alive are prohibited in HTTP/2 and HTTP/3. Chrome and Firefox ignore them in HTTP/2 responses, but Safari conforms to the HTTP/2 specification requirements and does not load any response that contains them.</p>
+</div>
+<p>Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.</p>
+</section>
+<section id="snat">
+<h3>SNAT<a class="headerlink" href="#snat" title="Link to this heading">¶</a></h3>
+<p>Distributed Cloud is a SaaS Platform.  BIG-IP is not.  Some applications may be configured to accept client source for persistence or other purposes.  Since the traffic will be proxied, applications been to be enabled for a more modern approach.</p>
+</section>
+</section>
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
@@ -527,6 +555,13 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
+<li><a class="reference internal" href="#websockets">Websockets</a></li>
+<li><a class="reference internal" href="#ltm-as-upstream-origin">LTM as Upstream / Origin</a><ul>
+<li><a class="reference internal" href="#http-1-1-http-2">HTTP/1.1 &amp; HTTP/2</a></li>
+<li><a class="reference internal" href="#http-keep-alive-connection-headers">HTTP Keep-Alive &amp; Connection Headers</a></li>
+<li><a class="reference internal" href="#snat">SNAT</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#ltm-to-customer-edge">LTM to Customer Edge</a></li>
 <li><a class="reference internal" href="#snat-pooling">SNAT Pooling</a></li>
 <li><a class="reference internal" href="#traffig-group-floating-self-ip">Traffig Group / Floating Self-IP</a></li>
@@ -587,7 +622,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 13:41:54.
+      Last updated on 2024-04-29 14:54:51.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
