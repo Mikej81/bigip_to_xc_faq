@@ -145,9 +145,9 @@
 <h3>list /ltm virtual all-properties<a class="headerlink" href="#list-ltm-virtual-all-properties" title="Link to this heading">¶</a></h3>
 <p>A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”.</p>
 <p>IRules that can be ignored because it’s a checkbox choice in XC are redirects:</p>
-<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">rules</span><span class="w"> </span><span class="k">{</span>
-<span class="w">     </span><span class="o">/</span><span class="nv">Common</span><span class="o">/</span>_sys_https_redirect
-<span class="k">}</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rules {
+     /Common/_sys_https_redirect
+}
 </pre></div>
 </div>
 <p>In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects.</p>
@@ -327,6 +327,52 @@
 <h2>CLIENT_ACCEPTED<a class="headerlink" href="#client-accepted" title="Link to this heading">¶</a></h2>
 <p>Depending on what is happening during CLIENT_ACCEPTED this event may not be needed, or if there is some complex action requirements it will not be a good possibility for porting. Most customers use this to log client ip/prefix data, or select a pool based on an identifying client attribute, this can be done via L7 Routes.</p>
 </section>
+<section id="clientssl-clientcert">
+<h2>CLIENTSSL_CLIENTCERT<a class="headerlink" href="#clientssl-clientcert" title="Link to this heading">¶</a></h2>
+<p>This event is probably not as common outside of mTLS use-cases, and in many cases is just used for logging, but also commonly used to create SSL Session ID’s for Persistence use-cases. While XC does not support SSL Session ID persistence today, it does support mTLS, and it can extract the X.509 attributes and inject into headers to use for similar purposes.</p>
+<p>If we evaluate the following example:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>CLIENTSSL_CLIENTCERT<span class="w"> </span><span class="k">{</span>
+<span class="w">   </span><span class="k">set</span><span class="w"> </span>cert<span class="w"> </span><span class="k">[</span><span class="nv">SSL</span><span class="o">::</span>cert<span class="w"> </span><span class="mi">0</span><span class="k">]</span>
+<span class="w">   </span><span class="c"># Save the cert fields to a list</span>
+<span class="w">   </span><span class="k">set</span><span class="w"> </span>fields<span class="w"> </span><span class="k">[</span><span class="nv">X509</span><span class="o">::</span>cert_fields<span class="w"> </span><span class="nv">$cert</span><span class="w"> </span><span class="k">[</span><span class="nv">SSL</span><span class="o">::</span>verify_result<span class="k">]</span><span class="w"> </span>hash<span class="w"> </span>issuer<span class="w"> </span>serial<span class="w"> </span>sigalg<span class="w"> </span>subject<span class="w"> </span>subpubkey<span class="w"> </span>validity<span class="w"> </span>versionnum<span class="w"> </span>whole<span class="k">]</span>
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;Client certificate fields - $fields&quot;</span>
+<span class="w">   </span><span class="c"># Add the cert to the session table for use in subsequent HTTP requests.  Use the SSL session ID as the key.</span>
+<span class="w">   </span><span class="nv">session</span><span class="w"> </span>add<span class="w"> </span>ssl<span class="w"> </span><span class="k">[</span><span class="nv">SSL</span><span class="o">::</span>sessionid<span class="k">]</span><span class="w"> </span><span class="k">[</span><span class="nb">list</span><span class="w"> </span><span class="nv">$cert</span><span class="w"> </span><span class="nv">$fields</span><span class="k">]</span><span class="w"> </span><span class="nv">$::session_timeout</span>
+<span class="k">}</span>
+</pre></div>
+</div>
+<p>We can use mTLS configuration to extract the X.509 Values.</p>
+<p>[image]</p>
+<p>Which we can then use for logic in the L7 routes.</p>
+</section>
+<section id="lb-selected-lb-failed">
+<h2>LB_SELECTED &amp; LB_FAILED<a class="headerlink" href="#lb-selected-lb-failed" title="Link to this heading">¶</a></h2>
+<p>Depending on the use-case here, it’s possible that we can supply simple solutions in XC to match functionality. Are you sending an apology page, are you redirecting, etc.</p>
+</section>
+<section id="http-request">
+<h2>HTTP_REQUEST<a class="headerlink" href="#http-request" title="Link to this heading">¶</a></h2>
+<p>Depending on what is happening here, most irules are easily portable to L7 routes, excluding any collection or streaming. Setting, removing, and appending HTTP Headers can be carried out in several ways, including AND/OR logic for modification.</p>
+</section>
+<section id="http-request-data">
+<h2>HTTP_REQUEST_DATA<a class="headerlink" href="#http-request-data" title="Link to this heading">¶</a></h2>
+<p>XC does not support HTTP Collect or streaming, so irules that rely heavily on this event will not be a good fit. However, you can do service chaining with NGINX in vk8s to carry out the end goal in some cases.</p>
+<p>HTTP_RESPONSE</p>
+<p>Like HTTP_REQUEST, this should be easily portable to L7 routes in XC.  For example:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_RESPONSE<span class="w"> </span><span class="k">{</span>
+<span class="w">   </span><span class="nv">HTTP</span><span class="o">::</span>header<span class="w"> </span>insert<span class="w"> </span>Strict-Transport-Security<span class="w"> </span><span class="s2">&quot;max-age= 31536000&quot;</span>
+<span class="w">   </span><span class="nv">HTTP</span><span class="o">::</span>header<span class="w"> </span>insert<span class="w"> </span><span class="s2">&quot;X-FRAME-OPTIONS&quot;</span><span class="w"> </span><span class="s2">&quot;SAMEORIGIN&quot;</span>
+<span class="k">}</span>
+</pre></div>
+</div>
+</section>
+<section id="http-response-data">
+<h2>HTTP_RESPONSE_DATA<a class="headerlink" href="#http-response-data" title="Link to this heading">¶</a></h2>
+<p>XC does not support HTTP Collect or streaming, so irules that rely heavily on this event will not be a good fit. However, you can do service chaining with NGINX in vk8s to carry out the end goal in some cases.</p>
+</section>
+<section id="access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed">
+<h2>ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED<a class="headerlink" href="#access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed" title="Link to this heading">¶</a></h2>
+<p>Since these are all APM iRules events, they are not supported in XC.  What we can do is evaluate incoming headers; MRH_Session, www-authenticate, etc., and make decisions on traffic.</p>
+</section>
 </section>
 
 
@@ -387,6 +433,12 @@
 <li><a class="reference internal" href="#id4">iRules</a><ul>
 <li><a class="reference internal" href="#rule-init">RULE_INIT</a></li>
 <li><a class="reference internal" href="#client-accepted">CLIENT_ACCEPTED</a></li>
+<li><a class="reference internal" href="#clientssl-clientcert">CLIENTSSL_CLIENTCERT</a></li>
+<li><a class="reference internal" href="#lb-selected-lb-failed">LB_SELECTED &amp; LB_FAILED</a></li>
+<li><a class="reference internal" href="#http-request">HTTP_REQUEST</a></li>
+<li><a class="reference internal" href="#http-request-data">HTTP_REQUEST_DATA</a></li>
+<li><a class="reference internal" href="#http-response-data">HTTP_RESPONSE_DATA</a></li>
+<li><a class="reference internal" href="#access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed">ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED</a></li>
 </ul>
 </li>
 </ul>
@@ -410,7 +462,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 12:07:09.
+      Last updated on 2024-04-29 12:17:43.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

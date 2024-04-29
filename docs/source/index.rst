@@ -149,11 +149,11 @@ A straightforward way, other than reviewing the bigip.conf is to use the list /l
 
 IRules that can be ignored because it’s a checkbox choice in XC are redirects: 
 
-.. code-block:: tcl
-   
+.. code-block:: text
+
    rules { 
         /Common/_sys_https_redirect 
-   } 
+   }
 
 In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects. 
 
@@ -338,4 +338,69 @@ CLIENT_ACCEPTED
 ---------------
 
 Depending on what is happening during CLIENT_ACCEPTED this event may not be needed, or if there is some complex action requirements it will not be a good possibility for porting. Most customers use this to log client ip/prefix data, or select a pool based on an identifying client attribute, this can be done via L7 Routes.
+
+CLIENTSSL_CLIENTCERT
+--------------------
+
+This event is probably not as common outside of mTLS use-cases, and in many cases is just used for logging, but also commonly used to create SSL Session ID’s for Persistence use-cases. While XC does not support SSL Session ID persistence today, it does support mTLS, and it can extract the X.509 attributes and inject into headers to use for similar purposes. 
+
+If we evaluate the following example:  
+
+.. code-block:: tcl
+   
+   when CLIENTSSL_CLIENTCERT {
+      set cert [SSL::cert 0]
+      # Save the cert fields to a list
+      set fields [X509::cert_fields $cert [SSL::verify_result] hash issuer serial sigalg subject subpubkey validity versionnum whole]
+      log local0. "Client certificate fields - $fields"
+      # Add the cert to the session table for use in subsequent HTTP requests.  Use the SSL session ID as the key.
+      session add ssl [SSL::sessionid] [list $cert $fields] $::session_timeout
+   }
+
+We can use mTLS configuration to extract the X.509 Values. 
+
+[image]
+
+Which we can then use for logic in the L7 routes. 
+
+LB_SELECTED & LB_FAILED 
+-----------------------
+
+Depending on the use-case here, it's possible that we can supply simple solutions in XC to match functionality. Are you sending an apology page, are you redirecting, etc. 
+
+HTTP_REQUEST 
+------------
+
+Depending on what is happening here, most irules are easily portable to L7 routes, excluding any collection or streaming. Setting, removing, and appending HTTP Headers can be carried out in several ways, including AND/OR logic for modification.  
+
+HTTP_REQUEST_DATA 
+-----------------
+
+XC does not support HTTP Collect or streaming, so irules that rely heavily on this event will not be a good fit. However, you can do service chaining with NGINX in vk8s to carry out the end goal in some cases. 
+
+HTTP_RESPONSE 
+
+Like HTTP_REQUEST, this should be easily portable to L7 routes in XC.  For example: 
+
+.. code-block:: tcl
+
+   when HTTP_RESPONSE { 
+      HTTP::header insert Strict-Transport-Security "max-age= 31536000" 
+      HTTP::header insert "X-FRAME-OPTIONS" "SAMEORIGIN" 
+   } 
+
+HTTP_RESPONSE_DATA 
+------------------
+
+XC does not support HTTP Collect or streaming, so irules that rely heavily on this event will not be a good fit. However, you can do service chaining with NGINX in vk8s to carry out the end goal in some cases. 
+
+ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Since these are all APM iRules events, they are not supported in XC.  What we can do is evaluate incoming headers; MRH_Session, www-authenticate, etc., and make decisions on traffic. 
+
+
+
+
+
 
