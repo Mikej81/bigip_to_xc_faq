@@ -27,6 +27,15 @@ Disqualifiers
 
 This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.
 
+#. Access services that require Match Across.
+
+   * DTLS - SSLVPN
+   * PCOIP - VDI BLAST works fine
+
+#. NTLM
+
+There are some workable use-cases around Federated Authentication and proxy/service chaining.
+
 Tools
 =====
 
@@ -50,14 +59,7 @@ Access Policy Manager
 
 Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.
 
-#. Access services that require Match Across.
 
-   * DTLS - SSLVPN
-   * PCOIP - VDI BLAST works fine
-
-There are some workable use-cases around Federated Authentication and proxy/service chaining.
-
-#. NTLM
 
 AWAF to WAAP
 ============

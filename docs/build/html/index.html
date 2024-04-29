@@ -48,6 +48,16 @@
 <section id="disqualifiers">
 <span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
+<ol class="arabic simple">
+<li><p>Access services that require Match Across.</p>
+<ul class="simple">
+<li><p>DTLS - SSLVPN</p></li>
+<li><p>PCOIP - VDI BLAST works fine</p></li>
+</ul>
+</li>
+<li><p>NTLM</p></li>
+</ol>
+<p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
 </section>
 <section id="tools">
 <h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
@@ -64,18 +74,6 @@
 <section id="access-policy-manager">
 <h1>Access Policy Manager<a class="headerlink" href="#access-policy-manager" title="Link to this heading">¶</a></h1>
 <p>Not all use-cases within APM will be disqualifiers. Just note that the following are not currently supported in XC.</p>
-<ol class="arabic simple">
-<li><p>Access services that require Match Across.</p>
-<ul class="simple">
-<li><p>DTLS - SSLVPN</p></li>
-<li><p>PCOIP - VDI BLAST works fine</p></li>
-</ul>
-</li>
-</ol>
-<p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
-<ol class="arabic simple">
-<li><p>NTLM</p></li>
-</ol>
 </section>
 <section id="awaf-to-waap">
 <h1>AWAF to WAAP<a class="headerlink" href="#awaf-to-waap" title="Link to this heading">¶</a></h1>
@@ -589,7 +587,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 13:30:54.
+      Last updated on 2024-04-29 13:38:16.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
