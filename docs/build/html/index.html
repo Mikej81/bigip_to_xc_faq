@@ -126,6 +126,9 @@
 </ul>
 </div></blockquote>
 <p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
+<ol class="arabic simple">
+<li><p>NTLM</p></li>
+</ol>
 </section>
 <section id="local-traffic-manager">
 <h1>Local Traffic Manager<a class="headerlink" href="#local-traffic-manager" title="Link to this heading">¶</a></h1>
@@ -163,10 +166,47 @@
 <li><p>Domain Keep-Alive Analyzer: &lt;<a class="reference external" href="https://keepalive.f5-sa.myedgedemo.com/">https://keepalive.f5-sa.myedgedemo.com/</a>&gt;</p></li>
 </ul>
 </section>
-<section id="apm-to-xc-service-chaining">
-<h1>APM to XC Service Chaining<a class="headerlink" href="#apm-to-xc-service-chaining" title="Link to this heading">¶</a></h1>
+<section id="apm-to-ditributed-cloud-service-chaining">
+<h1>APM to Ditributed Cloud (Service Chaining)<a class="headerlink" href="#apm-to-ditributed-cloud-service-chaining" title="Link to this heading">¶</a></h1>
 <p>We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.</p>
 <p>[image]</p>
+</section>
+<section id="api-security">
+<h1>API Security<a class="headerlink" href="#api-security" title="Link to this heading">¶</a></h1>
+</section>
+<section id="qkview-ihealth">
+<h1>QKView - iHealth<a class="headerlink" href="#qkview-ihealth" title="Link to this heading">¶</a></h1>
+<ol class="arabic simple">
+<li><p>show /ltm profile http global</p></li>
+</ol>
+<p>This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile.</p>
+<p>[image]</p>
+<p>We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects.</p>
+<p>This data is perfect if we are evaluating an API use-case.</p>
+<ol class="arabic simple">
+<li><p>UNIX - TMOS - tmctl -a (blade)</p></li>
+</ol>
+<p>This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations.</p>
+<p>[image]</p>
+</section>
+<section id="ltm-to-load-balancing-as-a-service">
+<h1>LTM to Load Balancing as a Service<a class="headerlink" href="#ltm-to-load-balancing-as-a-service" title="Link to this heading">¶</a></h1>
+</section>
+<section id="ltm-to-customer-edge">
+<h1>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h1>
+<p>The following ports can not be used when advertising services on a Customer Edge.</p>
+<ul class="simple">
+<li><ul>
+<li><p>22</p></li>
+<li><p>99</p></li>
+</ul>
+</li>
+<li><ul>
+<li><p>53</p></li>
+<li><p>10249</p></li>
+</ul>
+</li>
+</ul>
 </section>
 
 

@@ -81,6 +81,8 @@ Not all use-cases within APM will be disqualifiers. Just note that the following
   * PCOIP – VDI (BLAST works fine)
 There are some workable use-cases around Federated Authentication and proxy/service chaining.
 
+#. NTLM
+
 Local Traffic Manager
 =====================
 
@@ -105,9 +107,74 @@ The following are tools available to use today.  It's important to note that non
 - BIND to XC Conversion tool: <https://github.com/Mikej81/BINDtoXCDNS>
 - Domain Keep-Alive Analyzer: <https://keepalive.f5-sa.myedgedemo.com/>
 
-APM to XC Service Chaining
-==========================
+APM to Ditributed Cloud (Service Chaining)
+==========================================
 
 We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.
 
 [image]
+
+API Security
+============
+
+QKView - iHealth
+================
+
+#. show /ltm profile http global
+
+This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile. 
+
+[image]
+
+We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects. 
+
+This data is perfect if we are evaluating an API use-case. 
+
+#. UNIX - TMOS - tmctl -a (blade)
+
+This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations. 
+
+[image]
+
+LTM to Load Balancing as a Service
+==================================
+
+LTM to Customer Edge
+====================
+
+The following ports can not be used when advertising services on a Customer Edge. 
+
+.. list-table:: Reserved Ports
+   :widths: 50 50
+   :header-rows: 0
+
+* - 22
+  - 99
+* - 53
+  - 10249
+
+
+
++----+-------+
+| 22 | 999   |
+| 53 | 10249 |
+| 68 | 10250 |
+| 323 | 10251 |
+| 500 | 10252 |
+| 1067 | 10256 | 
+| 2379 | 10257 | 
+| 2380 | 10259 | 
+| 4500 | 18091 | 
+| 5355 | 18092 | 
+| 6443 | 18093 | 
+| 8005 | 18095 | 
+| 8007 | 22222 | 
+| 8087 | 23790 | 
+| 8443 | 23791 | 
+| 8444 | 23801 | 
+| 8505 | 23802 | 
+| 8507 | 28000-32767 | 
+| 9007 | | 
+| 9090 | | 
+| 9153 | | 
++------+-+
