@@ -68,6 +68,10 @@ The evolution to Web Application and API Protection (WAAP) represents a shift to
 
 Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.
 
+.. image:: ../images/picture17.png
+   :width: 700px
+   :align: center
+
 Check ASM Logs for activity. 
 
 Bot Defense 
@@ -86,6 +90,10 @@ If you do not have access to Policy Supervisor, you should check out the guidanc
  - https://github.com/f5devcentral/ps-convert  
  - https://policysupervisor.io/  
  - https://policysupervisor.io/convert  
+
+ .. image:: ../images/picture18.png
+   :width: 700px
+   :align: center
 
 Local Traffic Manager
 =====================
@@ -250,7 +258,7 @@ SSL Transactions
 ^^^^^^^^^^^^^^^^
 
 .. image:: ../images/picture3.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 TMM Client-Side Throughput
@@ -263,7 +271,7 @@ The sum throughput of all Traffic Management Microkernel (TMM) and Packet Veloci
  - Client Out: The sum of all egress traffic 
 
 .. image:: ../images/picture4.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 TMM Server-Side Throughput
@@ -276,7 +284,7 @@ The sum throughput of all TMM and PVA traffic on the server side. The following 
  - Server Out: The sum of all ingress traffic 
 
 .. image:: ../images/picture5.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 Throughput
@@ -284,20 +292,30 @@ Throughput
 
 The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second: 
 
-In: The ingress traffic to the system through its interfaces 
+ - In: The ingress traffic to the system through its interfaces 
 
-Out: The egress traffic from the system through its interfaces 
+ - Out: The egress traffic from the system through its interfaces 
 
-Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth. 
+ - Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth. 
 
-[image]
+.. image:: ../images/picture6.png
+   :width: 700px
+   :align: center
 
 iRules
 ------
 
 One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules. 
 
-[image]
+.. image:: ../images/picture7.png
+   :width: 700px
+   :align: center
+
+You can also see in the specific irules how many times its even executed (if its attached) under the irules Statistics. 
+
+.. image:: ../images/picture8.png
+   :width: 700px
+   :align: center
 
 Commands
 --------
@@ -307,7 +325,7 @@ list /ltm virtual all-properties
 
 A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”. 
 
-IRules that can be ignored because it’s a checkbox choice in XC are redirects: 
+IRules that can be ignored because it's a checkbox choice in XC are redirects: 
 
 .. code-block:: text
 
@@ -319,32 +337,46 @@ In the example QKView I am using, there are 670 instances of “rules”, and 46
 
 Let's look at an irule example, we can see it's in use, and has had 34k executions in the past 30 days. I'm sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It's setting the default pool, and if there aren't any active members, sending it to another page.  
 
-[image]
+.. image:: ../images/picture10.png
+   :width: 700px
+   :align: center
 
 This is extremely easy to do with just L7 Routes, and custom error pages. 
 
 In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects. 
 
-[image]
+.. image:: ../images/picture11.png
+   :width: 700px
+   :align: center
 
 Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs. 
 
 In the case of this irule, it's just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.
 
-[image]
-[image]
+.. image:: ../images/picture12.png
+   :width: 700px
+   :align: center
+
+From there you can add and remove headers to your heart's content. 
+
+.. image:: ../images/picture13.png
+   :width: 700px
+   :align: center
 
 If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options. 
 
-[image]
-
+.. image:: ../images/picture14.png
+   :width: 700px
+   :align: center
 
 show /ltm profile http global
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile. 
 
-[image]
+.. image:: ../images/picture1.png
+   :width: 700px
+   :align: center
 
 We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects. 
 
@@ -355,7 +387,9 @@ UNIX - TMOS - tmctl -a (blade)
 
 This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations. 
 
-[image]
+.. image:: ../images/picture9.png
+   :width: 700px
+   :align: center
 
 iRules
 ======
@@ -394,7 +428,9 @@ If we evaluate the following example:
 
 We can use mTLS configuration to extract the X.509 Values. 
 
-[image]
+.. image:: ../images/picture15.png
+   :width: 700px
+   :align: center
 
 Which we can then use for logic in the L7 routes. 
 
@@ -449,7 +485,9 @@ Let's look at an example that captures SSL Cipher and Version:
       if {$static::payload_dbg}{log local0.debug "Connection from Client: [IP::client_addr] with Cipher: [SSL::cipher name] and SSL Version: [SSL::cipher version]"} 
    } 
 
-[image]
+.. image:: ../images/picture16.png
+   :width: 700px
+   :align: center
 
 Another example that is common is logging all headers, which is another default in XC.  I have seen many variations of the following irule: 
 
@@ -493,3 +531,13 @@ Pool Selection Based on URI:  https://github.com/Mikej81/xc-app-services-tf/blob
 Customer Edge Sizing
 ====================
 
+Troubleshooting
+===============
+
+Refused to execute script from 'https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. 
+
+https://my.f5.com/manage/s/article/K98868401 
+
+.. image:: ../images/picture19.png
+   :width: 700px
+   :align: center

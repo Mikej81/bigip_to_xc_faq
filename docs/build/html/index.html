@@ -82,6 +82,8 @@
 <p>Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.</p>
 <p>The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.</p>
 <p>Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.</p>
+<a class="reference internal image-reference" href="_images/picture17.png"><img alt="_images/picture17.png" class="align-center" src="_images/picture17.png" style="width: 700px;" />
+</a>
 <p>Check ASM Logs for activity.</p>
 <section id="bot-defense">
 <h2>Bot Defense<a class="headerlink" href="#bot-defense" title="Link to this heading">¶</a></h2>
@@ -98,6 +100,8 @@
 <li><p><a class="reference external" href="https://policysupervisor.io/">https://policysupervisor.io/</a></p></li>
 <li><p><a class="reference external" href="https://policysupervisor.io/convert">https://policysupervisor.io/convert</a></p></li>
 </ul>
+<a class="reference internal image-reference" href="_images/picture18.png"><img alt="_images/picture18.png" class="align-center" src="_images/picture18.png" style="width: 700px;" />
+</a>
 </div></blockquote>
 </section>
 </section>
@@ -274,7 +278,7 @@
 <h2>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h2>
 <section id="ssl-transactions">
 <h3>SSL Transactions<a class="headerlink" href="#ssl-transactions" title="Link to this heading">¶</a></h3>
-<a class="reference internal image-reference" href="_images/picture3.png"><img alt="_images/picture3.png" class="align-center" src="_images/picture3.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="_images/picture3.png"><img alt="_images/picture3.png" class="align-center" src="_images/picture3.png" style="width: 700px;" />
 </a>
 </section>
 <section id="tmm-client-side-throughput">
@@ -286,7 +290,7 @@
 <li><p>Client Out: The sum of all egress traffic</p></li>
 </ul>
 </div></blockquote>
-<a class="reference internal image-reference" href="_images/picture4.png"><img alt="_images/picture4.png" class="align-center" src="_images/picture4.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="_images/picture4.png"><img alt="_images/picture4.png" class="align-center" src="_images/picture4.png" style="width: 700px;" />
 </a>
 </section>
 <section id="tmm-server-side-throughput">
@@ -298,22 +302,31 @@
 <li><p>Server Out: The sum of all ingress traffic</p></li>
 </ul>
 </div></blockquote>
-<a class="reference internal image-reference" href="_images/picture5.png"><img alt="_images/picture5.png" class="align-center" src="_images/picture5.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="_images/picture5.png"><img alt="_images/picture5.png" class="align-center" src="_images/picture5.png" style="width: 700px;" />
 </a>
 </section>
 <section id="throughput">
 <h3>Throughput<a class="headerlink" href="#throughput" title="Link to this heading">¶</a></h3>
 <p>The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second:</p>
-<p>In: The ingress traffic to the system through its interfaces</p>
-<p>Out: The egress traffic from the system through its interfaces</p>
-<p>Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth.</p>
-<p>[image]</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In: The ingress traffic to the system through its interfaces</p></li>
+<li><p>Out: The egress traffic from the system through its interfaces</p></li>
+<li><p>Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth.</p></li>
+</ul>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/picture6.png"><img alt="_images/picture6.png" class="align-center" src="_images/picture6.png" style="width: 700px;" />
+</a>
 </section>
 </section>
 <section id="irules">
 <h2>iRules<a class="headerlink" href="#irules" title="Link to this heading">¶</a></h2>
 <p>One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture7.png"><img alt="_images/picture7.png" class="align-center" src="_images/picture7.png" style="width: 700px;" />
+</a>
+<p>You can also see in the specific irules how many times its even executed (if its attached) under the irules Statistics.</p>
+<a class="reference internal image-reference" href="_images/picture8.png"><img alt="_images/picture8.png" class="align-center" src="_images/picture8.png" style="width: 700px;" />
+</a>
 </section>
 <section id="commands">
 <h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
@@ -328,21 +341,28 @@
 </div>
 <p>In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects.</p>
 <p>Let’s look at an irule example, we can see it’s in use, and has had 34k executions in the past 30 days. I’m sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It’s setting the default pool, and if there aren’t any active members, sending it to another page.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture10.png"><img alt="_images/picture10.png" class="align-center" src="_images/picture10.png" style="width: 700px;" />
+</a>
 <p>This is extremely easy to do with just L7 Routes, and custom error pages.</p>
 <p>In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture11.png"><img alt="_images/picture11.png" class="align-center" src="_images/picture11.png" style="width: 700px;" />
+</a>
 <p>Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs.</p>
 <p>In the case of this irule, it’s just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.</p>
-<p>[image]
-[image]</p>
+<a class="reference internal image-reference" href="_images/picture12.png"><img alt="_images/picture12.png" class="align-center" src="_images/picture12.png" style="width: 700px;" />
+</a>
+<p>From there you can add and remove headers to your heart’s content.</p>
+<a class="reference internal image-reference" href="_images/picture13.png"><img alt="_images/picture13.png" class="align-center" src="_images/picture13.png" style="width: 700px;" />
+</a>
 <p>If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture14.png"><img alt="_images/picture14.png" class="align-center" src="_images/picture14.png" style="width: 700px;" />
+</a>
 </section>
 <section id="show-ltm-profile-http-global">
 <h3>show /ltm profile http global<a class="headerlink" href="#show-ltm-profile-http-global" title="Link to this heading">¶</a></h3>
 <p>This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture1.png"><img alt="_images/picture1.png" class="align-center" src="_images/picture1.png" style="width: 700px;" />
+</a>
 <p>We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects.</p>
 <p>This data is perfect if we are evaluating an API use-case.</p>
 </section>
@@ -350,7 +370,8 @@
 <section id="unix-tmos-tmctl-a-blade">
 <h2>UNIX - TMOS - tmctl -a (blade)<a class="headerlink" href="#unix-tmos-tmctl-a-blade" title="Link to this heading">¶</a></h2>
 <p>This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture9.png"><img alt="_images/picture9.png" class="align-center" src="_images/picture9.png" style="width: 700px;" />
+</a>
 </section>
 </section>
 <section id="id5">
@@ -380,7 +401,8 @@
 </pre></div>
 </div>
 <p>We can use mTLS configuration to extract the X.509 Values.</p>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture15.png"><img alt="_images/picture15.png" class="align-center" src="_images/picture15.png" style="width: 700px;" />
+</a>
 <p>Which we can then use for logic in the L7 routes.</p>
 </section>
 <section id="lb-selected-lb-failed">
@@ -423,7 +445,8 @@
 <span class="k">}</span>
 </pre></div>
 </div>
-<p>[image]</p>
+<a class="reference internal image-reference" href="_images/picture16.png"><img alt="_images/picture16.png" class="align-center" src="_images/picture16.png" style="width: 700px;" />
+</a>
 <p>Another example that is common is logging all headers, which is another default in XC.  I have seen many variations of the following irule:</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_REQUEST<span class="w"> </span><span class="k">{</span>
 <span class="w">   </span><span class="k">set</span><span class="w"> </span>LogString<span class="w"> </span><span class="s2">&quot;Client [IP::client_addr]:[TCP::client_port] -&gt; [HTTP::host][HTTP::uri]&quot;</span>
@@ -459,6 +482,13 @@
 </section>
 <section id="customer-edge-sizing">
 <h1>Customer Edge Sizing<a class="headerlink" href="#customer-edge-sizing" title="Link to this heading">¶</a></h1>
+</section>
+<section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h1>
+<p>Refused to execute script from ‘<a class="reference external" href="https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd">https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd</a>’ because its MIME type (‘text/html’) is not executable, and strict MIME type checking is enabled.</p>
+<p><a class="reference external" href="https://my.f5.com/manage/s/article/K98868401">https://my.f5.com/manage/s/article/K98868401</a></p>
+<a class="reference internal image-reference" href="_images/picture19.png"><img alt="_images/picture19.png" class="align-center" src="_images/picture19.png" style="width: 700px;" />
+</a>
 </section>
 
 
@@ -537,6 +567,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#customer-edge-sizing">Customer Edge Sizing</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 
   </div>
@@ -558,7 +589,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 13:13:55.
+      Last updated on 2024-04-29 13:30:54.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
