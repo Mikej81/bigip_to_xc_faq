@@ -126,83 +126,8 @@
 <section id="apm-to-ditributed-cloud-service-chaining">
 <h1>APM to Ditributed Cloud (Service Chaining)<a class="headerlink" href="#apm-to-ditributed-cloud-service-chaining" title="Link to this heading">¶</a></h1>
 <p>We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.</p>
-<p>[image]</p>
 <section id="api-security">
 <h2>API Security<a class="headerlink" href="#api-security" title="Link to this heading">¶</a></h2>
-</section>
-</section>
-<section id="qkview-ihealth">
-<h1>QKView - iHealth<a class="headerlink" href="#qkview-ihealth" title="Link to this heading">¶</a></h1>
-<section id="graphs">
-<h2>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h2>
-<section id="ssl-transactions">
-<h3>SSL Transactions<a class="headerlink" href="#ssl-transactions" title="Link to this heading">¶</a></h3>
-<p>[image]</p>
-</section>
-<section id="tmm-client-side-throughput">
-<h3>TMM Client-Side Throughput<a class="headerlink" href="#tmm-client-side-throughput" title="Link to this heading">¶</a></h3>
-<p>The sum throughput of all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA) traffic on the client side. The following fields are represented in bits per second and packets per second:</p>
-<p>Client In: The sum of all ingress traffic</p>
-<p>Client Out: The sum of all egress traffic</p>
-<p>[image]</p>
-</section>
-<section id="tmm-server-side-throughput">
-<h3>TMM Server-Side Throughput<a class="headerlink" href="#tmm-server-side-throughput" title="Link to this heading">¶</a></h3>
-<p>The sum throughput of all TMM and PVA traffic on the server side. The following fields are represented in bits per second and packets per second:</p>
-<p>Server In: The sum of all egress traffic</p>
-<p>Server Out: The sum of all ingress traffic</p>
-<p>[image]</p>
-</section>
-<section id="throughput">
-<h3>Throughput<a class="headerlink" href="#throughput" title="Link to this heading">¶</a></h3>
-<p>The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second:</p>
-<p>In: The ingress traffic to the system through its interfaces</p>
-<p>Out: The egress traffic from the system through its interfaces</p>
-<p>Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth.</p>
-<p>[image]</p>
-</section>
-</section>
-<section id="irules">
-<h2>iRules<a class="headerlink" href="#irules" title="Link to this heading">¶</a></h2>
-<p>One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules.</p>
-<p>[image]</p>
-</section>
-<section id="commands">
-<h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
-<section id="list-ltm-virtual-all-properties">
-<h3>list /ltm virtual all-properties<a class="headerlink" href="#list-ltm-virtual-all-properties" title="Link to this heading">¶</a></h3>
-<p>A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”.</p>
-<p>IRules that can be ignored because it’s a checkbox choice in XC are redirects:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rules {
-     /Common/_sys_https_redirect
-}
-</pre></div>
-</div>
-<p>In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects.</p>
-<p>Let’s look at an irule example, we can see it’s in use, and has had 34k executions in the past 30 days. I’m sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It’s setting the default pool, and if there aren’t any active members, sending it to another page.</p>
-<p>[image]</p>
-<p>This is extremely easy to do with just L7 Routes, and custom error pages.</p>
-<p>In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects.</p>
-<p>[image]</p>
-<p>Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs.</p>
-<p>In the case of this irule, it’s just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.</p>
-<p>[image]
-[image]</p>
-<p>If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options.</p>
-<p>[image]</p>
-</section>
-<section id="show-ltm-profile-http-global">
-<h3>show /ltm profile http global<a class="headerlink" href="#show-ltm-profile-http-global" title="Link to this heading">¶</a></h3>
-<p>This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile.</p>
-<p>[image]</p>
-<p>We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects.</p>
-<p>This data is perfect if we are evaluating an API use-case.</p>
-</section>
-</section>
-<section id="unix-tmos-tmctl-a-blade">
-<h2>UNIX - TMOS - tmctl -a (blade)<a class="headerlink" href="#unix-tmos-tmctl-a-blade" title="Link to this heading">¶</a></h2>
-<p>This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations.</p>
-<p>[image]</p>
 </section>
 </section>
 <section id="ltm-to-load-balancing-as-a-service">
@@ -341,6 +266,91 @@
 <span class="w">                  </span><span class="no">curl -s -X ${API_METHOD} -H &#39;Content-Type: application/json&#39; -H &quot;Authorization: ${API_TOKEN}&quot; &quot;${API_URI}&quot;</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="qkview-ihealth">
+<h1>QKView - iHealth<a class="headerlink" href="#qkview-ihealth" title="Link to this heading">¶</a></h1>
+<section id="graphs">
+<h2>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h2>
+<section id="ssl-transactions">
+<h3>SSL Transactions<a class="headerlink" href="#ssl-transactions" title="Link to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/picture3.png"><img alt="_images/picture3.png" class="align-center" src="_images/picture3.png" style="width: 500px;" />
+</a>
+</section>
+<section id="tmm-client-side-throughput">
+<h3>TMM Client-Side Throughput<a class="headerlink" href="#tmm-client-side-throughput" title="Link to this heading">¶</a></h3>
+<p>The sum throughput of all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA) traffic on the client side. The following fields are represented in bits per second and packets per second:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Client In: The sum of all ingress traffic</p></li>
+<li><p>Client Out: The sum of all egress traffic</p></li>
+</ul>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/picture4.png"><img alt="_images/picture4.png" class="align-center" src="_images/picture4.png" style="width: 500px;" />
+</a>
+</section>
+<section id="tmm-server-side-throughput">
+<h3>TMM Server-Side Throughput<a class="headerlink" href="#tmm-server-side-throughput" title="Link to this heading">¶</a></h3>
+<p>The sum throughput of all TMM and PVA traffic on the server side. The following fields are represented in bits per second and packets per second:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Server In: The sum of all egress traffic</p></li>
+<li><p>Server Out: The sum of all ingress traffic</p></li>
+</ul>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/picture5.png"><img alt="_images/picture5.png" class="align-center" src="_images/picture5.png" style="width: 500px;" />
+</a>
+</section>
+<section id="throughput">
+<h3>Throughput<a class="headerlink" href="#throughput" title="Link to this heading">¶</a></h3>
+<p>The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second:</p>
+<p>In: The ingress traffic to the system through its interfaces</p>
+<p>Out: The egress traffic from the system through its interfaces</p>
+<p>Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth.</p>
+<p>[image]</p>
+</section>
+</section>
+<section id="irules">
+<h2>iRules<a class="headerlink" href="#irules" title="Link to this heading">¶</a></h2>
+<p>One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules.</p>
+<p>[image]</p>
+</section>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
+<section id="list-ltm-virtual-all-properties">
+<h3>list /ltm virtual all-properties<a class="headerlink" href="#list-ltm-virtual-all-properties" title="Link to this heading">¶</a></h3>
+<p>A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”.</p>
+<p>IRules that can be ignored because it’s a checkbox choice in XC are redirects:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rules {
+     /Common/_sys_https_redirect
+}
+</pre></div>
+</div>
+<p>In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects.</p>
+<p>Let’s look at an irule example, we can see it’s in use, and has had 34k executions in the past 30 days. I’m sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It’s setting the default pool, and if there aren’t any active members, sending it to another page.</p>
+<p>[image]</p>
+<p>This is extremely easy to do with just L7 Routes, and custom error pages.</p>
+<p>In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects.</p>
+<p>[image]</p>
+<p>Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs.</p>
+<p>In the case of this irule, it’s just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.</p>
+<p>[image]
+[image]</p>
+<p>If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options.</p>
+<p>[image]</p>
+</section>
+<section id="show-ltm-profile-http-global">
+<h3>show /ltm profile http global<a class="headerlink" href="#show-ltm-profile-http-global" title="Link to this heading">¶</a></h3>
+<p>This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile.</p>
+<p>[image]</p>
+<p>We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects.</p>
+<p>This data is perfect if we are evaluating an API use-case.</p>
+</section>
+</section>
+<section id="unix-tmos-tmctl-a-blade">
+<h2>UNIX - TMOS - tmctl -a (blade)<a class="headerlink" href="#unix-tmos-tmctl-a-blade" title="Link to this heading">¶</a></h2>
+<p>This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations.</p>
+<p>[image]</p>
 </section>
 </section>
 <section id="id5">
@@ -488,6 +498,13 @@
 <li><a class="reference internal" href="#api-security">API Security</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
+<li><a class="reference internal" href="#ltm-to-customer-edge">LTM to Customer Edge</a></li>
+<li><a class="reference internal" href="#snat-pooling">SNAT Pooling</a></li>
+<li><a class="reference internal" href="#traffig-group-floating-self-ip">Traffig Group / Floating Self-IP</a></li>
+<li><a class="reference internal" href="#custom-monitors">Custom Monitors</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#qkview-ihealth">QKView - iHealth</a><ul>
 <li><a class="reference internal" href="#graphs">Graphs</a><ul>
 <li><a class="reference internal" href="#ssl-transactions">SSL Transactions</a></li>
@@ -503,13 +520,6 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#unix-tmos-tmctl-a-blade">UNIX - TMOS - tmctl -a (blade)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
-<li><a class="reference internal" href="#ltm-to-customer-edge">LTM to Customer Edge</a></li>
-<li><a class="reference internal" href="#snat-pooling">SNAT Pooling</a></li>
-<li><a class="reference internal" href="#traffig-group-floating-self-ip">Traffig Group / Floating Self-IP</a></li>
-<li><a class="reference internal" href="#custom-monitors">Custom Monitors</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id5">iRules</a><ul>
@@ -548,7 +558,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 12:54:03.
+      Last updated on 2024-04-29 13:13:55.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

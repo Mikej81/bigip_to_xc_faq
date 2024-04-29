@@ -113,121 +113,8 @@ APM to Ditributed Cloud (Service Chaining)
 
 We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.
 
-[image]
-
 API Security
 ------------
-
-QKView - iHealth
-================
-
-Graphs
-------
-
-SSL Transactions
-^^^^^^^^^^^^^^^^
-
-[image]
-
-TMM Client-Side Throughput
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The sum throughput of all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA) traffic on the client side. The following fields are represented in bits per second and packets per second: 
-
-Client In: The sum of all ingress traffic 
-
-Client Out: The sum of all egress traffic 
-
-[image]
-
-TMM Server-Side Throughput
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The sum throughput of all TMM and PVA traffic on the server side. The following fields are represented in bits per second and packets per second: 
-
-Server In: The sum of all egress traffic 
-
-Server Out: The sum of all ingress traffic 
-
-[image]
-
-Throughput
-^^^^^^^^^^
-
-The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second: 
-
-In: The ingress traffic to the system through its interfaces 
-
-Out: The egress traffic from the system through its interfaces 
-
-Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth. 
-
-[image]
-
-iRules
-------
-
-One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules. 
-
-[image]
-
-Commands
---------
-
-list /ltm virtual all-properties
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”. 
-
-IRules that can be ignored because it’s a checkbox choice in XC are redirects: 
-
-.. code-block:: text
-
-   rules { 
-        /Common/_sys_https_redirect 
-   }
-
-In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects. 
-
-Let's look at an irule example, we can see it's in use, and has had 34k executions in the past 30 days. I'm sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It's setting the default pool, and if there aren't any active members, sending it to another page.  
-
-[image]
-
-This is extremely easy to do with just L7 Routes, and custom error pages. 
-
-In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects. 
-
-[image]
-
-Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs. 
-
-In the case of this irule, it's just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.
-
-[image]
-[image]
-
-If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options. 
-
-[image]
-
-
-show /ltm profile http global
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile. 
-
-[image]
-
-We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects. 
-
-This data is perfect if we are evaluating an API use-case. 
-
-UNIX - TMOS - tmctl -a (blade)
-------------------------------
-
-This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations. 
-
-[image]
 
 LTM to Load Balancing as a Service
 ==================================
@@ -353,6 +240,122 @@ For instance, if you need to activate a service policy or a network firewall rul
                      echo "API Call"
                      curl -s -X ${API_METHOD} -H 'Content-Type: application/json' -H "Authorization: ${API_TOKEN}" "${API_URI}"
 
+QKView - iHealth
+================
+
+Graphs
+------
+
+SSL Transactions
+^^^^^^^^^^^^^^^^
+
+.. image:: ../images/picture3.png
+   :width: 500px
+   :align: center
+
+TMM Client-Side Throughput
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The sum throughput of all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA) traffic on the client side. The following fields are represented in bits per second and packets per second: 
+
+ - Client In: The sum of all ingress traffic 
+
+ - Client Out: The sum of all egress traffic 
+
+.. image:: ../images/picture4.png
+   :width: 500px
+   :align: center
+
+TMM Server-Side Throughput
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The sum throughput of all TMM and PVA traffic on the server side. The following fields are represented in bits per second and packets per second: 
+
+ - Server In: The sum of all egress traffic 
+
+ - Server Out: The sum of all ingress traffic 
+
+.. image:: ../images/picture5.png
+   :width: 500px
+   :align: center
+
+Throughput
+^^^^^^^^^^
+
+The total throughput in and out of the BIG-IP system collected from all interfaces, including traffic processed by all Traffic Management Microkernel (TMM) and Packet Velocity ASIC (PVA), except the management interface. The following fields are represented in bits per second and packets per second: 
+
+In: The ingress traffic to the system through its interfaces 
+
+Out: The egress traffic from the system through its interfaces 
+
+Service: The larger of the two values of combined client and server-side ingress traffic or egress traffic, measured within TMM. You can compare this to VE-licensed bandwidth. 
+
+[image]
+
+iRules
+------
+
+One of the first things to evaluate with irules, is if they are even being used. An effective way to gauge that is to check the Unused Objects under the Config Explorer. So, if you have 150 total irules, but are not using 102 of them, then that means we only need to review 48 irules, and based on historical evidence, I would estimate over 75% of those are just uncustomized redirect irules. 
+
+[image]
+
+Commands
+--------
+
+list /ltm virtual all-properties
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A straightforward way, other than reviewing the bigip.conf is to use the list /ltm virtual all-properties command and then search for “rules {”. 
+
+IRules that can be ignored because it’s a checkbox choice in XC are redirects: 
+
+.. code-block:: text
+
+   rules { 
+        /Common/_sys_https_redirect 
+   }
+
+In the example QKView I am using, there are 670 instances of “rules”, and 468 instances of “/Common/_sys_https_redirect”. So, we have 202 instances of potential irules to evaluate, which is still pretty high.  But if we look at the irules, many customers have built custom redirects, which we can potentially ignore as well once we see they are just redirects. 
+
+Let's look at an irule example, we can see it's in use, and has had 34k executions in the past 30 days. I'm sure someone will argue the point, but this is still a redirect irule. Or you could call it an apology page. It's setting the default pool, and if there aren't any active members, sending it to another page.  
+
+[image]
+
+This is extremely easy to do with just L7 Routes, and custom error pages. 
+
+In this qkview, there are mostly custom redirect irules based on host headers, over and over again.  This is a manual process, so be prepared to see a lot of redirects. 
+
+[image]
+
+Then be prepared to see a ton of custom logging or header injections. Header Insert, Removal, and Appending can be easily done with the Load Balancer Advanced config, or more granularly via the L7 Route configs. 
+
+In the case of this irule, it's just going to insert the header on every HTTP REQUEST. This is managed at the top-level Load Balancer Configs under More Options.
+
+[image]
+[image]
+
+If this irule had more logic, IF host header = this.domain.com, then we would use the L7 Route options. 
+
+[image]
+
+
+show /ltm profile http global
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This command will give you a quick snapshot of traffic with a virtual server with an associated HTTP profile. 
+
+[image]
+
+We can see that we have had about 532 million requests across all virtual servers (over the last 30 days in this example). We can also see that there were about 71 million redirects. 
+
+This data is perfect if we are evaluating an API use-case. 
+
+UNIX - TMOS - tmctl -a (blade)
+------------------------------
+
+This gets us to the TMSTATS collections that span usually beyond the last 30 days that the RRD Graphs might show. Scroll down to the profile_http link and click it. This will give the aggregate values as well as every individual virtual server with a HTTP profile in a table format with column headers that are clickable to sort the data based on the values. Within this you will also reveal where some dormant virtuals are that do not need to be considered for migrations. 
+
+[image]
 
 iRules
 ======
