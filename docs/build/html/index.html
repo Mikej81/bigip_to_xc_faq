@@ -46,20 +46,20 @@
 <li><p>QKView - iHealth</p></li>
 </ol>
 <blockquote>
-<div><ol class="arabic simple">
+<div><ul class="simple">
 <li><p>show /ltm profile http global</p></li>
-<li><p>Commands –&gt; UNIX –&gt; TMOS –&gt; tmctl –a(blade)</p></li>
+<li><p>Commands – UNIX – TMOS – tmctl -a(blade)</p></li>
 <li><p>list /ltm virtual all-properties</p></li>
-</ol>
+</ul>
 </div></blockquote>
 <ol class="arabic simple">
 <li><p>LTM to LbaaS</p></li>
-<li><p>LTM – Customer Edge (CE) Reserved Ports</p></li>
-<li><p>LTM – SNAT (Pooling)</p></li>
-<li><p>LTM – Traffic Group / Floating Self</p></li>
-<li><p>LTM – Custom Monitor Shenanigans</p></li>
-<li><p>QKView / iHealth – Commands</p></li>
-<li><p>QKView / iHealth – Graphs</p></li>
+<li><p>LTM - Customer Edge (CE) Reserved Ports</p></li>
+<li><p>LTM - SNAT (Pooling)</p></li>
+<li><p>LTM - Traffic Group / Floating Self</p></li>
+<li><p>LTM - Custom Monitor Shenanigans</p></li>
+<li><p>QKView / iHealth - Commands</p></li>
+<li><p>QKView / iHealth - Graphs</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
@@ -93,14 +93,6 @@
 <li><p>Customer Edge Sizing</p></li>
 <li><p>Example(s) (Don’t know where to place yet)</p></li>
 </ol>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
 </section>
 <section id="disclaimer">
 <h1>Disclaimer<a class="headerlink" href="#disclaimer" title="Link to this heading">¶</a></h1>
@@ -158,12 +150,12 @@
 <h1>Tools<a class="headerlink" href="#tools" title="Link to this heading">¶</a></h1>
 <p>The following are tools available to use today.  It’s important to note that none of these tools are 100%. It is highly recommended to work with an XC Specialist to help in migration from other platforms to XC.</p>
 <ul class="simple">
-<li><p>iHealth: &lt;<a class="reference external" href="https://ihealth2.f5.com/">https://ihealth2.f5.com/</a>&gt;</p></li>
-<li><p>VS Code Extension: &lt;<a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5">https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5</a>&gt;
-- &lt;<a class="reference external" href="https://f5devcentral.github.io/vscode-f5/#/xcDiagnostics">https://f5devcentral.github.io/vscode-f5/#/xcDiagnostics</a>&gt;</p></li>
-<li><p>Policy Supervisor: &lt;<a class="reference external" href="https://policysupervisor.io/">https://policysupervisor.io/</a>&gt;</p></li>
-<li><p>BIND to XC Conversion tool: &lt;<a class="reference external" href="https://github.com/Mikej81/BINDtoXCDNS">https://github.com/Mikej81/BINDtoXCDNS</a>&gt;</p></li>
-<li><p>Domain Keep-Alive Analyzer: &lt;<a class="reference external" href="https://keepalive.f5-sa.myedgedemo.com/">https://keepalive.f5-sa.myedgedemo.com/</a>&gt;</p></li>
+<li><p>iHealth: <cite>https://ihealth2.f5.com/</cite></p></li>
+<li><p>VS Code Extension: <cite>https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5</cite>
+- <cite>https://f5devcentral.github.io/vscode-f5/#/xcDiagnostics</cite></p></li>
+<li><p>Policy Supervisor: <cite>https://policysupervisor.io/</cite></p></li>
+<li><p>BIND to XC Conversion tool: <cite>https://github.com/Mikej81/BINDtoXCDNS</cite></p></li>
+<li><p>Domain Keep-Alive Analyzer: <cite>https://keepalive.f5-sa.myedgedemo.com/</cite></p></li>
 </ul>
 </section>
 <section id="apm-to-ditributed-cloud-service-chaining">
@@ -195,18 +187,21 @@
 <section id="ltm-to-customer-edge">
 <h1>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h1>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<ul class="simple">
-<li><ul>
-<li><p>22</p></li>
-<li><p>99</p></li>
-</ul>
-</li>
-<li><ul>
-<li><p>53</p></li>
-<li><p>10249</p></li>
-</ul>
-</li>
-</ul>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>22</p></td>
+<td><p>99</p></td>
+</tr>
+<tr class="row-even"><td><p>53</p></td>
+<td><p>10249</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 

@@ -19,16 +19,16 @@ BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips
 #. APM to XC or Service Chaining
 #. API Security
 #. QKView - iHealth
-  #.  show /ltm profile http global
-  #.  Commands --> UNIX --> TMOS --> tmctl –a(blade)
-  #.  list /ltm virtual all-properties
+  *  show /ltm profile http global
+  *  Commands -- UNIX -- TMOS -- tmctl -a(blade)
+  *  list /ltm virtual all-properties
 #. LTM to LbaaS
-#. LTM – Customer Edge (CE) Reserved Ports
-#. LTM – SNAT (Pooling)
-#. LTM – Traffic Group / Floating Self
-#. LTM – Custom Monitor Shenanigans
-#. QKView / iHealth – Commands
-#. QKView / iHealth – Graphs
+#. LTM - Customer Edge (CE) Reserved Ports
+#. LTM - SNAT (Pooling)
+#. LTM - Traffic Group / Floating Self
+#. LTM - Custom Monitor Shenanigans
+#. QKView / iHealth - Commands
+#. QKView / iHealth - Graphs
   * SSL Transactions
   * TMM Client-Side Throughput
   * TMM Server-Side Throughput
@@ -140,12 +140,10 @@ The following ports can not be used when advertising services on a Customer Edge
    :widths: 50 50
    :header-rows: 0
 
-* - 22
-  - 99
-* - 53
-  - 10249
-
-
+   * - 22
+     - 99
+   * - 53
+     - 10249
 
 +----+-------+
 | 22 | 999   |
