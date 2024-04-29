@@ -160,19 +160,19 @@ Since keep-alive and connection headers will be ignored, its important to evalua
 Timeouts can be configured in a a number of locations in the XC Console.  
 
 .. figure:: ../images/lb_timeout.png
-   :width: 700px
+   :width: 500px
    :align: center
 
    Load Balancer Timeout.
    
 .. figure:: ../images/route_timeout.png
-   :width: 700px
+   :width: 500px
    :align: center
 
    Route Timeout.
 
 .. figure:: ../images/origin_timeout.png
-   :width: 700px
+   :width: 500px
    :align: center
 
    Origin Timeout.
