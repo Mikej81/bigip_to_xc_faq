@@ -347,7 +347,7 @@ This event is probably not as common outside of mTLS use-cases, and in many case
 If we evaluate the following example:  
 
 .. code-block:: tcl
-   
+
    when CLIENTSSL_CLIENTCERT {
       set cert [SSL::cert 0]
       # Save the cert fields to a list
@@ -378,7 +378,8 @@ HTTP_REQUEST_DATA
 
 XC does not support HTTP Collect or streaming, so irules that rely heavily on this event will not be a good fit. However, you can do service chaining with NGINX in vk8s to carry out the end goal in some cases. 
 
-HTTP_RESPONSE 
+HTTP_RESPONSE
+-------------
 
 Like HTTP_REQUEST, this should be easily portable to L7 routes in XC.  For example: 
 
@@ -399,8 +400,88 @@ ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCE
 
 Since these are all APM iRules events, they are not supported in XC.  What we can do is evaluate incoming headers; MRH_Session, www-authenticate, etc., and make decisions on traffic. 
 
+Logging
+-------
 
+Many customers use iRules to add more values to logs. With XC, many of the standard values are captured as part of the request and security logs by default.  
 
+Let's look at an example that captures SSL Cipher and Version: 
 
+.. code-block:: tcl
 
+   when CLIENTSSL_HANDSHAKE { 
+      # Identify the Client and negotiated cipher. 
+      if {$static::payload_dbg}{log local0.debug "Connection from Client: [IP::client_addr] with Cipher: [SSL::cipher name] and SSL Version: [SSL::cipher version]"} 
+   } 
+
+[image]
+
+Another example that is common is logging all headers, which is another default in XC.  I have seen many variations of the following irule: 
+
+.. code-block:: tcl
+
+   when HTTP_REQUEST {  
+      set LogString "Client [IP::client_addr]:[TCP::client_port] -> [HTTP::host][HTTP::uri]"  
+      log local0. "REQUEST======================================"  
+      log local0. "$LogString (request)"  
+      foreach aHeader [HTTP::header names] {  
+         log local0. "$aHeader: [HTTP::header value $aHeader]"  
+      }
+
+      log local0. "============================================="  
+   }  
+
+   when HTTP_RESPONSE {  
+      log local0. "RESPONSE====================================="  
+      log local0. "$LogString (response) - status: [HTTP::status]"  
+      foreach aHeader [HTTP::header names] {  
+         log local0. "$aHeader: [HTTP::header value $aHeader]"  
+      }
+
+      log local0. "============================================="  
+   }  
+
+Example Conversions in Terraform
+--------------------------------
+
+Standard http to https redirects are a checkbox in the UI but are also remarkably simple in terraform. 
+
+Standard HTTP to HTTPS redirect: http_redirect = true 
+
+Custom Redirect based on Header: https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L180  
+
+Path Rewrites:  https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L330  
+
+Pool Selection Based on URI:  https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L412   
+
+AWAF to WAAP
+============
+
+Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.
+
+The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.
+
+Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.
+
+Check ASM Logs for activity. 
+
+Bot Defense 
+----------------------
+
+Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.
+
+Policy Supervisor 
+-----------------
+
+Policy Supervisor can be used to convert BIG-IP Adv. WAF policies to XC WAF policies. 
+
+If you do not have access to Policy Supervisor, you should check out the guidance here:  
+
+ - https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing 
+ - https://github.com/f5devcentral/ps-convert  
+ - https://policysupervisor.io/  
+ - https://policysupervisor.io/convert  
+
+Customer Edge Sizing
+====================
 

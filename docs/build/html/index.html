@@ -182,8 +182,8 @@
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id5">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id6">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -356,7 +356,9 @@
 <section id="http-request-data">
 <h2>HTTP_REQUEST_DATA<a class="headerlink" href="#http-request-data" title="Link to this heading">¶</a></h2>
 <p>XC does not support HTTP Collect or streaming, so irules that rely heavily on this event will not be a good fit. However, you can do service chaining with NGINX in vk8s to carry out the end goal in some cases.</p>
-<p>HTTP_RESPONSE</p>
+</section>
+<section id="http-response">
+<h2>HTTP_RESPONSE<a class="headerlink" href="#http-response" title="Link to this heading">¶</a></h2>
 <p>Like HTTP_REQUEST, this should be easily portable to L7 routes in XC.  For example:</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_RESPONSE<span class="w"> </span><span class="k">{</span>
 <span class="w">   </span><span class="nv">HTTP</span><span class="o">::</span>header<span class="w"> </span>insert<span class="w"> </span>Strict-Transport-Security<span class="w"> </span><span class="s2">&quot;max-age= 31536000&quot;</span>
@@ -373,6 +375,76 @@
 <h2>ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED<a class="headerlink" href="#access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed" title="Link to this heading">¶</a></h2>
 <p>Since these are all APM iRules events, they are not supported in XC.  What we can do is evaluate incoming headers; MRH_Session, www-authenticate, etc., and make decisions on traffic.</p>
 </section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">¶</a></h2>
+<p>Many customers use iRules to add more values to logs. With XC, many of the standard values are captured as part of the request and security logs by default.</p>
+<p>Let’s look at an example that captures SSL Cipher and Version:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>CLIENTSSL_HANDSHAKE<span class="w"> </span><span class="k">{</span>
+<span class="w">   </span><span class="c"># Identify the Client and negotiated cipher.</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="k">{</span><span class="nv">$static::payload_dbg</span><span class="k">}{</span><span class="nv">log</span><span class="w"> </span>local0.debug<span class="w"> </span><span class="s2">&quot;Connection from Client: [IP::client_addr] with Cipher: [SSL::cipher name] and SSL Version: [SSL::cipher version]&quot;</span><span class="k">}</span>
+<span class="k">}</span>
+</pre></div>
+</div>
+<p>[image]</p>
+<p>Another example that is common is logging all headers, which is another default in XC.  I have seen many variations of the following irule:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_REQUEST<span class="w"> </span><span class="k">{</span>
+<span class="w">   </span><span class="k">set</span><span class="w"> </span>LogString<span class="w"> </span><span class="s2">&quot;Client [IP::client_addr]:[TCP::client_port] -&gt; [HTTP::host][HTTP::uri]&quot;</span>
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;REQUEST======================================&quot;</span>
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;$LogString (request)&quot;</span>
+<span class="w">   </span><span class="k">foreach</span><span class="w"> </span>aHeader<span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>header<span class="w"> </span>names<span class="k">]</span><span class="w"> </span><span class="k">{</span>
+<span class="w">      </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;$aHeader: [HTTP::header value $aHeader]&quot;</span>
+<span class="w">   </span><span class="k">}</span>
+
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;=============================================&quot;</span>
+<span class="k">}</span>
+
+<span class="nv">when</span><span class="w"> </span>HTTP_RESPONSE<span class="w"> </span><span class="k">{</span>
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;RESPONSE=====================================&quot;</span>
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;$LogString (response) - status: [HTTP::status]&quot;</span>
+<span class="w">   </span><span class="k">foreach</span><span class="w"> </span>aHeader<span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>header<span class="w"> </span>names<span class="k">]</span><span class="w"> </span><span class="k">{</span>
+<span class="w">      </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;$aHeader: [HTTP::header value $aHeader]&quot;</span>
+<span class="w">   </span><span class="k">}</span>
+
+<span class="w">   </span><span class="nv">log</span><span class="w"> </span>local0.<span class="w"> </span><span class="s2">&quot;=============================================&quot;</span>
+<span class="k">}</span>
+</pre></div>
+</div>
+</section>
+<section id="example-conversions-in-terraform">
+<h2>Example Conversions in Terraform<a class="headerlink" href="#example-conversions-in-terraform" title="Link to this heading">¶</a></h2>
+<p>Standard http to https redirects are a checkbox in the UI but are also remarkably simple in terraform.</p>
+<p>Standard HTTP to HTTPS redirect: http_redirect = true</p>
+<p>Custom Redirect based on Header: <a class="reference external" href="https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L180">https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L180</a></p>
+<p>Path Rewrites:  <a class="reference external" href="https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L330">https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L330</a></p>
+<p>Pool Selection Based on URI:  <a class="reference external" href="https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L412">https://github.com/Mikej81/xc-app-services-tf/blob/main/xc/http_loadbalancer.tf#L412</a></p>
+</section>
+</section>
+<section id="awaf-to-waap">
+<h1>AWAF to WAAP<a class="headerlink" href="#awaf-to-waap" title="Link to this heading">¶</a></h1>
+<p>Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.</p>
+<p>The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.</p>
+<p>Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.</p>
+<p>Check ASM Logs for activity.</p>
+<section id="bot-defense">
+<h2>Bot Defense<a class="headerlink" href="#bot-defense" title="Link to this heading">¶</a></h2>
+<p>Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.</p>
+</section>
+<section id="id5">
+<h2>Policy Supervisor<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<p>Policy Supervisor can be used to convert BIG-IP Adv. WAF policies to XC WAF policies.</p>
+<p>If you do not have access to Policy Supervisor, you should check out the guidance here:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing">https://f5.sharepoint.com/sites/salesandmktg/sales/SecurityMarketing</a></p></li>
+<li><p><a class="reference external" href="https://github.com/f5devcentral/ps-convert">https://github.com/f5devcentral/ps-convert</a></p></li>
+<li><p><a class="reference external" href="https://policysupervisor.io/">https://policysupervisor.io/</a></p></li>
+<li><p><a class="reference external" href="https://policysupervisor.io/convert">https://policysupervisor.io/convert</a></p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="customer-edge-sizing">
+<h1>Customer Edge Sizing<a class="headerlink" href="#customer-edge-sizing" title="Link to this heading">¶</a></h1>
 </section>
 
 
@@ -437,10 +509,19 @@
 <li><a class="reference internal" href="#lb-selected-lb-failed">LB_SELECTED &amp; LB_FAILED</a></li>
 <li><a class="reference internal" href="#http-request">HTTP_REQUEST</a></li>
 <li><a class="reference internal" href="#http-request-data">HTTP_REQUEST_DATA</a></li>
+<li><a class="reference internal" href="#http-response">HTTP_RESPONSE</a></li>
 <li><a class="reference internal" href="#http-response-data">HTTP_RESPONSE_DATA</a></li>
 <li><a class="reference internal" href="#access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed">ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED</a></li>
+<li><a class="reference internal" href="#logging">Logging</a></li>
+<li><a class="reference internal" href="#example-conversions-in-terraform">Example Conversions in Terraform</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#awaf-to-waap">AWAF to WAAP</a><ul>
+<li><a class="reference internal" href="#bot-defense">Bot Defense</a></li>
+<li><a class="reference internal" href="#id5">Policy Supervisor</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#customer-edge-sizing">Customer Edge Sizing</a></li>
 </ul>
 
   </div>
@@ -462,7 +543,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 12:17:43.
+      Last updated on 2024-04-29 12:34:17.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
