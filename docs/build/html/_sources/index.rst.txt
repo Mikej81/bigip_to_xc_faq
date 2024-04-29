@@ -116,8 +116,8 @@ DNS
 
 Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The base format for zones is JSON/YAML, and in some cases cannot be directly imported.
 
-APM to Ditributed Cloud (Service Chaining)
-==========================================
+APM to Distributed Cloud (Service Chaining)
+===========================================
 
 We covered the disqualifiers, but there are some that will work fine, like service chaining for Federation, or header validation.
 
