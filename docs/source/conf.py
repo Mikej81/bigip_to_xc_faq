@@ -37,8 +37,7 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinxcontrib.nwdiag",
     "sphinx_copybutton",
-    "sphinxcontrib.blockdiag"
-    # "sphinx.ext.autosectionlabel"
+    "sphinxcontrib.blockdiag",
 ]
 
 graphviz_output_format = "svg"
