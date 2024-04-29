@@ -145,13 +145,15 @@ LTM to Customer Edge
 The following ports can not be used when advertising services on a Customer Edge. 
 
 .. list-table:: Reserved Ports
+   :widths: 50 50
+   :header-rows: 0
 
 * - 22
   - 99
 * - 53
   - 10249
 
-  
+
 
 +----+-------+
 | 22 | 999   |
