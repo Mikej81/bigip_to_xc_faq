@@ -88,12 +88,18 @@
 </section>
 <section id="awaf-to-waap">
 <h1>AWAF to WAAP<a class="headerlink" href="#awaf-to-waap" title="Link to this heading">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While we understand that some organizations have spend years, and even decades tuning a WAF policy, the recommended best practice when moving to Distributed Cloud WAAP is to start with the default recommendations, and tune from there.
+Service Policies will cover traditional IP blocks as well as additional IP-Geo, and additional allow/deny rules.</p>
+</div>
 <p>Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.</p>
 <p>The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.</p>
 <p>Be sure to evaluate ASM Logs for WAF activity to determing which, if any policies need to be migrated.</p>
 <a class="reference internal image-reference" href="_images/picture17.png"><img alt="_images/picture17.png" class="align-center" src="_images/picture17.png" style="width: 700px;" />
 </a>
 <p>Check ASM Logs for activity.</p>
+<p>The best way to streamline the AWAF to XC WAAP policy is to use Policy Supervisor.</p>
 <section id="bot-defense">
 <h2>Bot Defense<a class="headerlink" href="#bot-defense" title="Link to this heading">¶</a></h2>
 <p>Bot Defense is likely to require XC Bot Defense Standard at a minimum, or Advanced. XC WAAP contains only Bot Signatures. A simple alternative could be XC JavaScript Challenge, which might not meet your security requirements.</p>
@@ -658,7 +664,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-05-01 12:32:31.
+      Last updated on 2024-05-01 16:48:55.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

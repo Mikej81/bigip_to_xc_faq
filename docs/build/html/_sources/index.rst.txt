@@ -67,6 +67,9 @@ APM services are not supported in Distrubuted Cloud today, but Service/Proxy cha
 AWAF to WAAP
 ============
 
+.. note:: While we understand that some organizations have spend years, and even decades tuning a WAF policy, the recommended best practice when moving to Distributed Cloud WAAP is to start with the default recommendations, and tune from there.
+   Service Policies will cover traditional IP blocks as well as additional IP-Geo, and additional allow/deny rules.  
+
 Web Application Firewalls (WAF) originally emerged to protect web applications by filtering and monitoring HTTP traffic between a web application and the Internet. WAFs primarily focus on defending against common web attacks such as SQL injection, cross-site scripting (XSS), and file inclusion, operating according to a set of predefined or customizable rules.
 
 The evolution to Web Application and API Protection (WAAP) represents a shift towards a more comprehensive security framework that not only includes all the traditional protections offered by WAFs but also extends coverage to APIs, which are increasingly used as the backbone of modern applications.
@@ -78,6 +81,8 @@ Be sure to evaluate ASM Logs for WAF activity to determing which, if any policie
    :align: center
 
 Check ASM Logs for activity. 
+
+The best way to streamline the AWAF to XC WAAP policy is to use Policy Supervisor.
 
 Bot Defense 
 ----------------------
