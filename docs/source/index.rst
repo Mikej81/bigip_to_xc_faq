@@ -30,11 +30,13 @@ This is a list of use-cases that can be used to immediately disqualify a migrati
 #. Access services that require Match Across.
 
    * DTLS - SSLVPN
-   * PCOIP - VDI BLAST works fine
+   * PCOIP - HTML5 BLAST works fine
+
+   .. note:: Most VPN Providers allow you to disable UDP/DTLS and force TCP, this works fine.
 
 #. NTLM
 
-.. note:: There are some workable use-cases around Federated Authentication and proxy/service chaining.
+.. warning:: With the deprecation of NTLM Announced by Microsoft, it is recommend that all customers move to Kerberos, if at all possible.
 
 Tools
 =====
@@ -58,6 +60,9 @@ Access Policy Manager
 =====================
 
 APM services are not supported in Distrubuted Cloud today, but Service/Proxy chaining is supported.
+
+.. note:: There are some workable use-cases around Federated Authentication and proxy/service chaining.
+
 
 AWAF to WAAP
 ============

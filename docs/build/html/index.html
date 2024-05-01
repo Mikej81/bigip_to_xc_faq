@@ -48,18 +48,22 @@
 <section id="disqualifiers">
 <span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p>Access services that require Match Across.</p>
 <ul class="simple">
 <li><p>DTLS - SSLVPN</p></li>
-<li><p>PCOIP - VDI BLAST works fine</p></li>
+<li><p>PCOIP - HTML5 BLAST works fine</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Most VPN Providers allow you to disable UDP/DTLS and force TCP, this works fine.</p>
+</div>
 </li>
 <li><p>NTLM</p></li>
 </ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>With the deprecation of NTLM Announced by Microsoft, it is recommend that all customers move to Kerberos, if at all possible.</p>
 </div>
 </section>
 <section id="tools">
@@ -77,6 +81,10 @@
 <section id="access-policy-manager">
 <h1>Access Policy Manager<a class="headerlink" href="#access-policy-manager" title="Link to this heading">¶</a></h1>
 <p>APM services are not supported in Distrubuted Cloud today, but Service/Proxy chaining is supported.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are some workable use-cases around Federated Authentication and proxy/service chaining.</p>
+</div>
 </section>
 <section id="awaf-to-waap">
 <h1>AWAF to WAAP<a class="headerlink" href="#awaf-to-waap" title="Link to this heading">¶</a></h1>
@@ -650,7 +658,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-04-29 17:34:14.
+      Last updated on 2024-05-01 12:32:31.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
