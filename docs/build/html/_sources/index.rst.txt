@@ -20,6 +20,11 @@ Introduction
 
 This semi-comprehensive guide is designed to streamline your migration from F5 BIG-IP to F5 Distributed Cloud.  This document aims to address frequently asked questions that arise during the migration process, offering clear, concise answers and practical insights to ensure a smooth transition.
 
+Contributing
+============
+
+Github: https://github.com/Mikej81/bigip_to_xc_faq
+
 .. _disqualifiers:
 
 Disqualifiers
