@@ -483,7 +483,7 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <section id="http-request">
 <h2>HTTP_REQUEST<a class="headerlink" href="#http-request" title="Link to this heading">¶</a></h2>
 <p>Depending on what is happening here, most irules are easily portable to L7 routes, excluding any collection or streaming. Setting, removing, and appending HTTP Headers can be carried out in several ways, including AND/OR logic for modification.</p>
-<p>Matching Host Header and URI Path Example</p>
+<p>Matching Host Header and URI Path Example using L7 Route Configs:</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_REQUEST<span class="w"> </span><span class="k">{</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="k">{</span><span class="w"> </span><span class="k">([</span><span class="nb">string</span><span class="w"> </span>tolower<span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>host<span class="k">]]</span><span class="w"> </span><span class="nv">equals</span><span class="w"> </span><span class="s2">&quot;domain.com&quot;</span><span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>uri<span class="k">]</span><span class="w"> </span><span class="nv">starts_with</span><span class="w"> </span><span class="s2">&quot;/xyz&quot;</span><span class="w"> </span><span class="k">}</span><span class="w"> </span><span class="k">{</span>
 <span class="w">    </span><span class="nv">node</span><span class="w"> </span><span class="mf">1.1</span>.1.1<span class="w"> </span><span class="mi">443</span>
@@ -492,6 +492,24 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/http_request_1.png"><img alt="_images/http_request_1.png" class="align-center" src="_images/http_request_1.png" style="width: 700px;" />
+</a>
+<p>If the irule also does Host rewrites to the upstream, or path rewriting, this is also done with L7 Route configs.</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_REQUEST<span class="w"> </span><span class="k">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="k">{</span><span class="w"> </span><span class="k">([</span><span class="nb">string</span><span class="w"> </span>tolower<span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>host<span class="k">]]</span><span class="w"> </span><span class="nv">equals</span><span class="w"> </span><span class="s2">&quot;domain.com&quot;</span><span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>uri<span class="k">]</span><span class="w"> </span><span class="nv">starts_with</span><span class="w"> </span><span class="s2">&quot;/xyz&quot;</span><span class="w"> </span><span class="k">}</span><span class="w"> </span><span class="k">{</span>
+<span class="w">    </span><span class="c"># Rewrite the host header</span>
+<span class="w">    </span><span class="nv">HTTP</span><span class="o">::</span>host<span class="w"> </span><span class="s2">&quot;app1.domain.com&quot;</span>
+
+<span class="w">    </span><span class="c"># Rewrite the URI path from /xyz to /lmn</span>
+<span class="w">    </span><span class="nv">HTTP</span><span class="o">::</span>uri<span class="w"> </span><span class="k">[</span><span class="nb">string</span><span class="w"> </span>map<span class="w"> </span><span class="k">{</span><span class="s2">&quot;/xyz&quot;</span><span class="w"> </span><span class="s2">&quot;/lmn&quot;</span><span class="k">}</span><span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>uri<span class="k">]]</span>
+
+<span class="w">    </span><span class="nv">node</span><span class="w"> </span><span class="mf">1.1</span>.1.1<span class="w"> </span><span class="mi">443</span>
+<span class="w">  </span><span class="k">}</span>
+<span class="k">}</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/http_request_2.png"><img alt="_images/http_request_2.png" class="align-center" src="_images/http_request_2.png" style="width: 700px;" />
+</a>
+<a class="reference internal image-reference" href="_images/http_request_3.png"><img alt="_images/http_request_3.png" class="align-center" src="_images/http_request_3.png" style="width: 700px;" />
 </a>
 </section>
 <section id="http-request-data">
@@ -679,7 +697,7 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-05-24 08:55:32.
+      Last updated on 2024-05-24 09:04:36.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

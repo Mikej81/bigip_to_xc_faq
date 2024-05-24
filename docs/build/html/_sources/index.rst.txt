@@ -518,7 +518,7 @@ HTTP_REQUEST
 
 Depending on what is happening here, most irules are easily portable to L7 routes, excluding any collection or streaming. Setting, removing, and appending HTTP Headers can be carried out in several ways, including AND/OR logic for modification.  
 
-Matching Host Header and URI Path Example
+Matching Host Header and URI Path Example using L7 Route Configs:
 
 .. code-block:: tcl
 
@@ -532,6 +532,29 @@ Matching Host Header and URI Path Example
    :width: 700px
    :align: center
 
+If the irule also does Host rewrites to the upstream, or path rewriting, this is also done with L7 Route configs.
+
+.. code-block:: tcl
+
+   when HTTP_REQUEST {
+     if { ([string tolower [HTTP::host]] equals "domain.com") && [HTTP::uri] starts_with "/xyz" } {
+       # Rewrite the host header
+       HTTP::host "app1.domain.com"
+       
+       # Rewrite the URI path from /xyz to /lmn
+       HTTP::uri [string map {"/xyz" "/lmn"} [HTTP::uri]]
+   
+       node 1.1.1.1 443
+     }
+   }
+
+.. image:: ../images/http_request_2.png
+   :width: 700px
+   :align: center
+
+.. image:: ../images/http_request_3.png
+   :width: 700px
+   :align: center
 
 HTTP_REQUEST_DATA 
 -----------------
