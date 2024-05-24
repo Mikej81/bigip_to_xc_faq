@@ -486,10 +486,9 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <p>Matching Host Header and URI Path Example</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>HTTP_REQUEST<span class="w"> </span><span class="k">{</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="k">{</span><span class="w"> </span><span class="k">([</span><span class="nb">string</span><span class="w"> </span>tolower<span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>host<span class="k">]]</span><span class="w"> </span><span class="nv">equals</span><span class="w"> </span><span class="s2">&quot;domain.com&quot;</span><span class="k">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">[</span><span class="nv">HTTP</span><span class="o">::</span>uri<span class="k">]</span><span class="w"> </span><span class="nv">starts_with</span><span class="w"> </span><span class="s2">&quot;/xyz&quot;</span><span class="w"> </span><span class="k">}</span><span class="w"> </span><span class="k">{</span>
-<span class="w">    </span><span class="nv">HTTP</span><span class="o">::</span>uri<span class="w"> </span><span class="s2">&quot;/xyz[HTTP::uri]</span>
-<span class="s2">    node 1.1.1.1 443</span>
-<span class="s2">  }</span>
-<span class="s2">}</span>
+<span class="w">    </span><span class="nv">node</span><span class="w"> </span><span class="mf">1.1</span>.1.1<span class="w"> </span><span class="mi">443</span>
+<span class="w">  </span><span class="k">}</span>
+<span class="k">}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/http_request_1.png"><img alt="_images/http_request_1.png" class="align-center" src="_images/http_request_1.png" style="width: 700px;" />
@@ -680,7 +679,7 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-05-24 08:53:28.
+      Last updated on 2024-05-24 08:55:32.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

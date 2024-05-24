@@ -521,10 +521,9 @@ Depending on what is happening here, most irules are easily portable to L7 route
 Matching Host Header and URI Path Example
 
 .. code-block:: tcl
-   
+
    when HTTP_REQUEST {
      if { ([string tolower [HTTP::host]] equals "domain.com") && [HTTP::uri] starts_with "/xyz" } {
-       HTTP::uri "/xyz[HTTP::uri]
        node 1.1.1.1 443
      }
    }
