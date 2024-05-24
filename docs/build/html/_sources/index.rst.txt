@@ -702,7 +702,9 @@ Pool Selection Based on URI:  https://github.com/Mikej81/xc-app-services-tf/blob
 Customer Edge Sizing
 ====================
 
-So big...
+Customer Edge Sizing can be simple, or not simple. Same as a BIG-IP, does it need LTM, APM, ASM, AFM, etc? HA?  Is the CE going to be used for L3 Routing / Mesh services only?  Will it need to run security services?  Will it need to run compute?
+
+A good primer on deployment models can be found at Matt Harmon's article here:  https://community.f5.com/kb/technicalarticles/f5-distributed-cloud---customer-edge-site---deployment--routing-options/319435
 
 Troubleshooting
 ===============
