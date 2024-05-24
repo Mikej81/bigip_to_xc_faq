@@ -32,10 +32,10 @@ Disqualifiers
 
 This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.
 
-#. Access services that require Match Across.
+#. Access services that require Match Across.  https://my.f5.com/manage/s/article/K5837
 
    * DTLS - SSLVPN
-   * PCOIP - HTML5 BLAST works fine
+   * PCOIP - (HTML5 BLAST works fine)
 
    .. note:: Most VPN Providers allow you to disable UDP/DTLS and force TCP, this works fine.
 
@@ -583,10 +583,69 @@ ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCE
 
 Since these are all APM iRules events, they are not supported in XC.  What we can do is evaluate incoming headers; MRH_Session, www-authenticate, etc., and make decisions on traffic. 
 
+An Example of filtering unauthenticated traffic would be to create a route and filter on Authorization Header exists, or 401 Error from Upstream, and then provide a custom error page:
+
+.. code-block:: html
+
+   <html>
+   <head>
+       <script src="https://cdn.jsdelivr.net/gh/dankogai/js-deflate/rawdeflate.js"></script>
+   </head>
+   
+   <body>
+       <h1>SAMLAuthnRequest Test</h1>
+       <br />
+       To use, modify the following variables:
+       <ul>
+           <li>var consumer = window.location.href; //Service Provider</li>
+           <li>var destination = 'https://sso.domain.com/login'; //Identity Provider </li>
+           <li>var issuer = 'https://sso.domain.com'; //Identity Provider</li>
+       </ul>
+       Todo:
+       <ul>
+           <li>-what else?</li>
+       </ul>
+   
+       <form id="login" method="POST">
+           <input type="hidden" id="SAMLRequest" name="SAMLRequest">
+           <button onclick="setAssertion()">Logon</button>
+   
+           <script>
+               var consumer = window.location.href;                //Service Provider
+               var destination = 'https://sso.domain.com/login';   //Identity Provider
+               var issuer = 'https://sso.domain.com';             //Identity Provider
+               var template = `
+           '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="" Version="2.0" ProviderName="XC SP" IssueInstant="2014-07-16T23:52:45Z" 
+           Destination="${destination}" ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" 
+           AssertionConsumerServiceURL="${consumer}">  
+           <saml:Issuer>${issuer}</saml:Issuer>  
+           <samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" AllowCreate="true" />  
+           <samlp:RequestedAuthnContext Comparison="exact">
+           <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
+           </samlp:RequestedAuthnContext>
+           </samlp:AuthnRequest>'
+           `;
+               var deflatedTemplate = RawDeflate.deflate(template);
+               //var encodedTemplate = btoa(template);
+               var encodedTemplate = btoa(deflatedTemplate);
+               function setAssertion() {
+                   document.getElementById("SAMLRequest").setAttribute('value', encodedTemplate);
+                   document.getElementById("login").setAttribute('action', issuer);
+               }
+   
+           </script>
+       </form>
+   </body>
+   
+   </html>
+
 Logging
 -------
 
 Many customers use iRules to add more values to logs. With XC, many of the standard values are captured as part of the request and security logs by default.  
+
+XC will automatically log telemetry data on platform, and can be connected to a SIEM via a Local (SYSLOG) or Global Log Reciever (JSON/HEC).  
+https://docs.cloud.f5.com/docs/how-to/others/global-log-streaming
 
 Let's look at an example that captures SSL Cipher and Version: 
 

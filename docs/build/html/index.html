@@ -53,10 +53,10 @@
 <span id="id3"></span><h1>Disqualifiers<a class="headerlink" href="#disqualifiers" title="Link to this heading">¶</a></h1>
 <p>This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.</p>
 <ol class="arabic">
-<li><p>Access services that require Match Across.</p>
+<li><p>Access services that require Match Across.  <a class="reference external" href="https://my.f5.com/manage/s/article/K5837">https://my.f5.com/manage/s/article/K5837</a></p>
 <ul class="simple">
 <li><p>DTLS - SSLVPN</p></li>
-<li><p>PCOIP - HTML5 BLAST works fine</p></li>
+<li><p>PCOIP - (HTML5 BLAST works fine)</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -533,10 +533,66 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <section id="access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed">
 <h2>ACCESS_SESSION_STARTED, ACCESS_POLICY_AGENT_EVENT, ACCESS_POLICY_COMPLETED, ACCESS_ACL_DENIED, ACCESS_ACL_ALLOWED, REWRITE_REQUEST_DONE, REWRITE_RESPONSE_DONE, ACCESS_SESSION_CLOSED<a class="headerlink" href="#access-session-started-access-policy-agent-event-access-policy-completed-access-acl-denied-access-acl-allowed-rewrite-request-done-rewrite-response-done-access-session-closed" title="Link to this heading">¶</a></h2>
 <p>Since these are all APM iRules events, they are not supported in XC.  What we can do is evaluate incoming headers; MRH_Session, www-authenticate, etc., and make decisions on traffic.</p>
+<p>An Example of filtering unauthenticated traffic would be to create a route and filter on Authorization Header exists, or 401 Error from Upstream, and then provide a custom error page:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/gh/dankogai/js-deflate/rawdeflate.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>SAMLAuthnRequest Test<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+    To use, modify the following variables:
+    <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>var consumer = window.location.href; //Service Provider<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>var destination = &#39;https://sso.domain.com/login&#39;; //Identity Provider <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>var issuer = &#39;https://sso.domain.com&#39;; //Identity Provider<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+    Todo:
+    <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>-what else?<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">form</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;login&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;POST&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;hidden&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;SAMLRequest&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;SAMLRequest&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">button</span> <span class="na">onclick</span><span class="o">=</span><span class="s">&quot;setAssertion()&quot;</span><span class="p">&gt;</span>Logon<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">consumer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="p">;</span><span class="w">                </span><span class="c1">//Service Provider</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">destination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;https://sso.domain.com/login&#39;</span><span class="p">;</span><span class="w">   </span><span class="c1">//Identity Provider</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">issuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;https://sso.domain.com&#39;</span><span class="p">;</span><span class="w">             </span><span class="c1">//Identity Provider</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`</span>
+<span class="sb">        &#39;&lt;samlp:AuthnRequest xmlns:samlp=&quot;urn:oasis:names:tc:SAML:2.0:protocol&quot; xmlns:saml=&quot;urn:oasis:names:tc:SAML:2.0:assertion&quot; ID=&quot;&quot; Version=&quot;2.0&quot; ProviderName=&quot;XC SP&quot; IssueInstant=&quot;2014-07-16T23:52:45Z&quot;</span>
+<span class="sb">        Destination=&quot;</span><span class="si">${</span><span class="nx">destination</span><span class="si">}</span><span class="sb">&quot; ProtocolBinding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST&quot;</span>
+<span class="sb">        AssertionConsumerServiceURL=&quot;</span><span class="si">${</span><span class="nx">consumer</span><span class="si">}</span><span class="sb">&quot;&gt;</span>
+<span class="sb">        &lt;saml:Issuer&gt;</span><span class="si">${</span><span class="nx">issuer</span><span class="si">}</span><span class="sb">&lt;/saml:Issuer&gt;</span>
+<span class="sb">        &lt;samlp:NameIDPolicy Format=&quot;urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress&quot; AllowCreate=&quot;true&quot; /&gt;</span>
+<span class="sb">        &lt;samlp:RequestedAuthnContext Comparison=&quot;exact&quot;&gt;</span>
+<span class="sb">        &lt;saml:AuthnContextClassRef&gt;urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport&lt;/saml:AuthnContextClassRef&gt;</span>
+<span class="sb">        &lt;/samlp:RequestedAuthnContext&gt;</span>
+<span class="sb">        &lt;/samlp:AuthnRequest&gt;&#39;</span>
+<span class="sb">        `</span><span class="p">;</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">deflatedTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">RawDeflate</span><span class="p">.</span><span class="nx">deflate</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
+<span class="w">            </span><span class="c1">//var encodedTemplate = btoa(template);</span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">encodedTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">btoa</span><span class="p">(</span><span class="nx">deflatedTemplate</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">function</span><span class="w"> </span><span class="nx">setAssertion</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;SAMLRequest&quot;</span><span class="p">).</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">encodedTemplate</span><span class="p">);</span>
+<span class="w">                </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;login&quot;</span><span class="p">).</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;action&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">issuer</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
 </section>
 <section id="logging">
 <h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">¶</a></h2>
 <p>Many customers use iRules to add more values to logs. With XC, many of the standard values are captured as part of the request and security logs by default.</p>
+<p>XC will automatically log telemetry data on platform, and can be connected to a SIEM via a Local (SYSLOG) or Global Log Reciever (JSON/HEC).
+<a class="reference external" href="https://docs.cloud.f5.com/docs/how-to/others/global-log-streaming">https://docs.cloud.f5.com/docs/how-to/others/global-log-streaming</a></p>
 <p>Let’s look at an example that captures SSL Cipher and Version:</p>
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nv">when</span><span class="w"> </span>CLIENTSSL_HANDSHAKE<span class="w"> </span><span class="k">{</span>
 <span class="w">   </span><span class="c"># Identify the Client and negotiated cipher.</span>
@@ -697,7 +753,7 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-05-24 09:04:36.
+      Last updated on 2024-05-24 11:38:40.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
