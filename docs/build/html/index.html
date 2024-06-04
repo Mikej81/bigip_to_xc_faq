@@ -178,25 +178,25 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 </div>
 <p>Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.</p>
 <p>Timeouts can be configured in a a number of locations in the XC Console.</p>
-<figure class="align-center" id="id6">
+<figure class="align-center" id="id9">
 <a class="reference internal image-reference" href="_images/lb_timeout.png"><img alt="_images/lb_timeout.png" src="_images/lb_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<figure class="align-center" id="id7">
+<figure class="align-center" id="id10">
 <a class="reference internal image-reference" href="_images/route_timeout.png"><img alt="_images/route_timeout.png" src="_images/route_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<figure class="align-center" id="id8">
+<figure class="align-center" id="id11">
 <a class="reference internal image-reference" href="_images/origin_timeout.png"><img alt="_images/origin_timeout.png" src="_images/origin_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -243,8 +243,8 @@ Since this is for a Monitor/Health Check, its a good practice to close the conne
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id9">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id9" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id12" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -713,7 +713,36 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
 <section id="troubleshooting">
 <h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h1>
 <section id="errors">
-<h2>503 Errors<a class="headerlink" href="#errors" title="Link to this heading">¶</a></h2>
+<h2>403 Errors<a class="headerlink" href="#errors" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>csrf_origin_mismatch: If CSRF is enabled we compare the value of origin header against a list of allowed domains.
+If origin is not there WAF blocks the request. Check how the POST or PUT requests are being sent.</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Is the Origin or Referer header set? else, a CSRF violation woud be seen.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id6">
+<h2>404 Errors<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>route_not_found: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration),
+SNI at Origin Server config is wrong</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>The request fails because authority does not route match.</p></li>
+<li><p>There is not match for host header www.example.com OR match condition in any of the route objects.</p></li>
+<li><p>Requests to the LB’s CNAME with either the exact or wildcard domain names are allowed. Others are returned a 404.</p></li>
+<li><p>An incoming request to a HTTP LB will be rejected with a 404 error and req_id if the incoming Host header does not match any of:
+* The values configured under Domains
+* The CNAME record value for the virtual host, e.g. ves-io-&lt;random-string&gt;.ac.vh.volterra.us</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id7">
+<h2>503 Errors<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <p>In some cases, for troubleshooting, I can help to turn off XC Default Error Messages and allow errors directly from the Upstream.</p>
 <ul class="simple">
 <li><p>cluster_not_found: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug</p></li>
@@ -753,9 +782,9 @@ and ensure the proper version protocol is selected.</p></li>
 <li><p>It is possible that on the server, the http idle timeout can be lesser than the idle-timeout on the origin-pool. It is strongly recommended that the origin-pool idle-timeout be configured to be less than that on the server.</p></li>
 </ul>
 </div></blockquote>
-<ul>
-<li><p>upstream_reset_before_response_started{protocol_error}:</p>
 <ul class="simple">
+<li><p>upstream_reset_before_response_started{protocol_error}:</p>
+<ul>
 <li><p>Check if the http response headers from the origin-server have any invalid field names. Query to the origin-server directly via curl or something equivalent.
 Usually indicates that XC is seeing an error in one of the http-headers of the response from the server. We would need to see the http-headers that the origin-server
 is responding with to identify the issue.</p></li>
@@ -763,6 +792,49 @@ is responding with to identify the issue.</p></li>
 the response.</p></li>
 </ul>
 </li>
+<li><p>upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111}: No TCP SYN-ACKs seen for the TCP connection attempts to the endpoints.</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>The time_to_last_downstream_tx_byte would usually show some x seconds, and the other time_to_last_* fields would be 0 in this case</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>upstream_reset_before_response_started{connection_termination}: This error is due to server closing the connection while connection pool is still active.</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Match the connection idle timeout between XC origin pool and Server. [Keep XC origin pool idle timeout a few seconds lesser than than the server timeout].</p></li>
+<li><p>Apply retry policy for 5xx error. Packet capture if the issue still persists after applying above config changes.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id8">
+<h2>504 Errors<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>stream_idle_timeout: Origin server took more than the idle timeout configured to respond to the request.</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Increase the idle timeout on the HTTP LB.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>upstream_response_timeout: Origin server took more time than the timeout configured on the route in the Loadbalancer.</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Increase the timeout in the miscellaneous options of the route (default 30 seconds)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that this response code may be seen due to TCP Connection timeout towards the upstream. It will happen in case “”route”” timeout has a lower value than “”connectionTimeout”” configured on the “”cluster”” “</p>
+</div>
+</div></blockquote>
+</section>
+<section id="other-errors">
+<h2>Other Errors<a class="headerlink" href="#other-errors" title="Link to this heading">¶</a></h2>
+<ul>
 <li><p>Refused to execute script from ‘<a class="reference external" href="https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd">https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd</a>’ because its MIME type (‘text/html’) is not executable, and strict MIME type checking is enabled.</p>
 <p><a class="reference external" href="https://my.f5.com/manage/s/article/K98868401">https://my.f5.com/manage/s/article/K98868401</a></p>
 <a class="reference internal image-reference" href="_images/picture19.png"><img alt="_images/picture19.png" class="align-center" src="_images/picture19.png" style="width: 700px;" />
@@ -872,7 +944,11 @@ the response.</p></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
-<li><a class="reference internal" href="#errors">503 Errors</a></li>
+<li><a class="reference internal" href="#errors">403 Errors</a></li>
+<li><a class="reference internal" href="#id6">404 Errors</a></li>
+<li><a class="reference internal" href="#id7">503 Errors</a></li>
+<li><a class="reference internal" href="#id8">504 Errors</a></li>
+<li><a class="reference internal" href="#other-errors">Other Errors</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#terminology">Terminology</a></li>
@@ -897,7 +973,7 @@ the response.</p></li>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-04 16:46:23.
+      Last updated on 2024-06-04 17:00:08.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
