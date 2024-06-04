@@ -791,10 +791,36 @@ If you decide to enable VRRP for a cluster, the following should be evaluated to
 Troubleshooting
 ===============
 
-Refused to execute script from 'https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. 
+503 Errors
+----------
 
-https://my.f5.com/manage/s/article/K98868401 
+* cluster_not_found: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug
 
-.. image:: ../images/picture19.png
-   :width: 700px
-   :align: center
+* upstream_reset_before_response_started{connection}: 
+
+ - One common reason in the field would be that the customers would not have allowlisted our RE public IPs , to reach their endpoints
+ - Other common reason, it is related to connection failure after X amount of seconds the connection timeout. We should try to increase the connection timeout at origin pool to a higher value to overcome this
+
+* no_healthy_upstream: Health check on the origin pool has failed. Check health check config and the expected response codes, as well as allowed IPs.
+
+* via_upstream: The upstream server has generated this error code. Analysis has to be done on the endpoint. Another recommendation in such cases is to take a pcap from your client to your origin server and see the details of the request.
+
+* remote_reset: Can happen if the server does not correctly work with the http(1.1 or 2). Curl to the endpoint directly and see what http version works for the request and configure accordingly.
+
+* upstream_reset_before_response_started{connection_failure,TLS_error:_33554536:system_library:OPENSSL_internal:Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS handshake failure.
+
+
+* Refused to execute script from 'https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. 
+
+  https://my.f5.com/manage/s/article/K98868401 
+  
+  .. image:: ../images/picture19.png
+     :width: 700px
+     :align: center
+
+Terminology
+===========
+
+* Downstream: Client Side Connection (Source)
+
+* Upstream: Server Side Connection (Origin)
