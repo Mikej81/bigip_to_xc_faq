@@ -897,3 +897,9 @@ Terminology
 * Downstream: Client Side Connection (Source)
 
 * Upstream: Server Side Connection (Origin)
+
+* WAAP: Web Application & API Protection
+
+* AWAF: Advanced Web Application Firewall
+
+* SNAT: Source Network Address Translation
