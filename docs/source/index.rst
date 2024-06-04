@@ -715,7 +715,8 @@ A good primer on deployment models can be found at Matt Harmon's article here:  
 Clustering and High availability
 --------------------------------
 
-Customer Edge Clustering differs from BIG-IP in that it is based on Kubernetes, and requires different architectures.  I highly recommend checking out the Customer Edge Deployment article by Matt Harmon on DevCentral for a primer https://community.f5.com/kb/technicalarticles/f5-distributed-cloud---customer-edge-site---deployment--routing-options/319435.  
+Customer Edge Clustering differs from BIG-IP in that it is based on Kubernetes, and requires different 
+architectures.  
 
 Similar to BIG-IP in VMWare or HyperV environments, there are a couple configs to be aware of.
 
@@ -724,7 +725,7 @@ VRRP in a Hypervisor
 
 If you decide to enable VRRP for a cluster, the following should be evaluated.
 
-#. You must set the virtual switch's Forged Transmits and Promiscuous Mode settings to Accept. (These settings are 
+* You must set the virtual switch's Forged Transmits and Promiscuous Mode settings to Accept. (These settings are 
    disabled by default). For information about enabling Promiscuous Mode and Forged Transmits on the virtual switch,
    refer to the VMware knowledge base article listed in the Supplemental section or in the VMware documentation for 
    your specific VMware version. F5 recommends that hypervisor administrators be very conservative with regard to 
@@ -733,10 +734,12 @@ If you decide to enable VRRP for a cluster, the following should be evaluated.
    an additional hypervisor CPU is required to copy these packets. This can lead to CPU exhaustion for the 
    hypervisor, even if an interface is uninitialized on the system. 
 
-#. Starting from VMware ESXI 6.7, Promiscuous Mode can be replaced by MAC Learning in a supported environment, that is, Promiscuous Mode can be set to Reject when MAC Learning is enabled on the vSwitch on which BIGIP's VM is part of that network. The MAC Learning feature is supported only on Distributed Virtual (DV) Port groups.
+
+* Starting from VMware ESXI 6.7, Promiscuous Mode can be replaced by MAC Learning in a supported environment, that is, Promiscuous Mode can be set to Reject when MAC Learning is enabled on the vSwitch on which BIGIP's VM is part of that network. The MAC Learning feature is supported only on Distributed Virtual (DV) Port groups.
    When configuring traffic-group MAC masquerading for BIG-IP Virtual Edition (VE) on Microsoft Hyper-V servers, you will need to enable MAC address spoofing for the BIG-IP VMs in order for MAC masquerading to work properly.
 
-#. To verify multicast is enabled issue the following command from each node in the Customer Edge Cluster.
+
+* To verify multicast is enabled issue the following command from each node in the Customer Edge Cluster.
 
 .. code-block:: bash
 
