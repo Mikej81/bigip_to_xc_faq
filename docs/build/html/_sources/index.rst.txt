@@ -723,7 +723,7 @@ Similar to BIG-IP in VMWare or HyperV environments, there are a couple configs t
 VRRP in a Hypervisor
 --------------------
 
-If you decide to enable VRRP for a cluster, the following should be evaluated.
+If you decide to enable VRRP for a cluster, the following should be evaluated to ensure multicast is properly enabled.
 
 * You must set the virtual switch's Forged Transmits and Promiscuous Mode settings to Accept. (These settings are 
   disabled by default). For information about enabling Promiscuous Mode and Forged Transmits on the virtual switch,
