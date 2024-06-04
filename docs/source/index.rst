@@ -807,7 +807,7 @@ Troubleshooting
 
 * remote_reset: Can happen if the server does not correctly work with the http(1.1 or 2). Curl to the endpoint directly and see what http version works for the request and configure accordingly.
 
-* upstream_reset_before_response_started{connection_failure,TLS_error:_33554536:system_library:OPENSSL_internal:Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS handshake failure.
+* upstream_reset_before_response_started {connection_failure, TLS_error, OPENSSL_internal, Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS handshake failure.
 
 
 * Refused to execute script from 'https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. 

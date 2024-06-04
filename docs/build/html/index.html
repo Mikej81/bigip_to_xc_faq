@@ -728,7 +728,7 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
 <li><p>no_healthy_upstream: Health check on the origin pool has failed. Check health check config and the expected response codes, as well as allowed IPs.</p></li>
 <li><p>via_upstream: The upstream server has generated this error code. Analysis has to be done on the endpoint. Another recommendation in such cases is to take a pcap from your client to your origin server and see the details of the request.</p></li>
 <li><p>remote_reset: Can happen if the server does not correctly work with the http(1.1 or 2). Curl to the endpoint directly and see what http version works for the request and configure accordingly.</p></li>
-<li><p>upstream_reset_before_response_started{connection_failure,TLS_error:_33554536:system_library:OPENSSL_internal:Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS handshake failure.</p></li>
+<li><p>upstream_reset_before_response_started {connection_failure, TLS_error, OPENSSL_internal, Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS handshake failure.</p></li>
 <li><p>Refused to execute script from ‘<a class="reference external" href="https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd">https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd</a>’ because its MIME type (‘text/html’) is not executable, and strict MIME type checking is enabled.</p>
 <p><a class="reference external" href="https://my.f5.com/manage/s/article/K98868401">https://my.f5.com/manage/s/article/K98868401</a></p>
 <a class="reference internal image-reference" href="_images/picture19.png"><img alt="_images/picture19.png" class="align-center" src="_images/picture19.png" style="width: 700px;" />
@@ -863,7 +863,7 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-04 16:20:16.
+      Last updated on 2024-06-04 16:23:45.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
