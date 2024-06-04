@@ -791,10 +791,12 @@ If you decide to enable VRRP for a cluster, the following should be evaluated to
 Troubleshooting
 ===============
 
+In some cases, for troubleshooting, I can help to turn off XC Default Error Messages and allow errors directly from the Upstream.
+
 403 Errors
 ----------
 
-* csrf_origin_mismatch: If CSRF is enabled we compare the value of origin header against a list of allowed domains. 
+* **csrf_origin_mismatch**: If CSRF is enabled we compare the value of origin header against a list of allowed domains. 
   If origin is not there WAF blocks the request. Check how the POST or PUT requests are being sent. 
   
  - Is the Origin or Referer header set? else, a CSRF violation woud be seen.
@@ -802,7 +804,7 @@ Troubleshooting
 404 Errors
 ----------
 
-* route_not_found: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration), 
+* **route_not_found**: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration), 
   SNI at Origin Server config is wrong									
 
  * The request fails because authority does not route match. 									
@@ -815,50 +817,40 @@ Troubleshooting
 503 Errors
 ----------
 
-In some cases, for troubleshooting, I can help to turn off XC Default Error Messages and allow errors directly from the Upstream.
+* **cluster_not_found**: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug
 
-* cluster_not_found: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug
-
-
-* upstream_reset_before_response_started{connection}: 
+* **upstream_reset_before_response_started{connection}**: 
 
  - One common reason would be that the firewalls would not have allow listed Regional Edge public IPs, to reach upstream(s). https://docs.cloud.f5.com/docs/reference/network-cloud-ref
  - Other common reason is related to connection failure after X amount of seconds the connection timeout. Try to increase the connection timeout at origin pool to a higher value 
    to overcome this.
 
+* **no_healthy_upstream**: Health check on the origin pool has failed. Check health check config and the expected response codes, as well as allowed IPs.
 
-* no_healthy_upstream: Health check on the origin pool has failed. Check health check config and the expected response codes, as well as allowed IPs.
-
-
-* via_upstream: The upstream server has generated this error code. Analysis has to be done on the endpoint. Another recommendation in such cases is to take a pcap from 
+* **via_upstream**: The upstream server has generated this error code. Analysis has to be done on the endpoint. Another recommendation in such cases is to take a pcap from 
   client to origin server and see the details of the request.
 
-
-* remote_reset: Can happen if the server does not correctly work with the http(1.1 or 2). Curl to the endpoint directly and see what http version works for the request and 
+* **remote_reset**: Can happen if the server does not correctly work with the http(1.1 or 2). Curl to the endpoint directly and see what http version works for the request and 
   configure accordingly.
 
-
-* upstream_reset_before_response_started {connection_failure, TLS_error, OPENSSL_internal, Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS 
+* **upstream_reset_before_response_started {connection_failure, TLS_error, OPENSSL_internal, Connection_reset_by_peer}**: If any TLS error is seen like this, it indicates a TLS 
   handshake failure.
 
-
-* upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:WRONG_VERSION_NUMBER}: Check if SSL negotiation is working with the endpoint by doing a curl to the endpoint via https directly, 
+* **upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:WRONG_VERSION_NUMBER}**: Check if SSL negotiation is working with the endpoint by doing a curl to the endpoint via https directly, 
   and ensure the proper version protocol is selected.
 
-
-* upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:CERTIFICATE_VERIFY_FAILED}: The certificate offered by the server was validated and that validation failed. 
+* **upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:CERTIFICATE_VERIFY_FAILED}**: The certificate offered by the server was validated and that validation failed. 
 
  - In the Origin pool TLS config, skip the verification.
  - In the Origin pool TLS config, Use a custom CA list.
 
-
-* upstream_reset_before_response_started{connection termination}: The upstream server is closing the connection.
+* **upstream_reset_before_response_started{connection termination}**: The upstream server is closing the connection.
 
  - It is possible that the upstream server is overloaded by the requests and unable to handle it. Check response time value.
  - It is possible that on the server, the http idle timeout can be lesser than the idle-timeout on the origin-pool. It is strongly recommended that the origin-pool idle-timeout be configured to be less than that on the server.
 
 
-* upstream_reset_before_response_started{protocol_error}: 
+* **upstream_reset_before_response_started{protocol_error}**: 
 
   - Check if the http response headers from the origin-server have any invalid field names. Query to the origin-server directly via curl or something equivalent.																
     Usually indicates that XC is seeing an error in one of the http-headers of the response from the server. We would need to see the http-headers that the origin-server 
@@ -866,11 +858,11 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
   - In one of the scenarios, it was seen that the origin-server may have a total of more than 100 headers(mostly duplciate headers), which XC will treat as failure parsing 
     the response.																
 
-* upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111}: No TCP SYN-ACKs seen for the TCP connection attempts to the endpoints. 
+* **upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111}**: No TCP SYN-ACKs seen for the TCP connection attempts to the endpoints. 
 
  - The time_to_last_downstream_tx_byte would usually show some x seconds, and the other time_to_last_* fields would be 0 in this case
 
-* upstream_reset_before_response_started{connection_termination}: This error is due to server closing the connection while connection pool is still active.
+* **upstream_reset_before_response_started{connection_termination}**: This error is due to server closing the connection while connection pool is still active.
 
  - Match the connection idle timeout between XC origin pool and Server. [Keep XC origin pool idle timeout a few seconds lesser than than the server timeout].
  - Apply retry policy for 5xx error. Packet capture if the issue still persists after applying above config changes.
@@ -878,17 +870,15 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
 504 Errors
 ----------
 
-* stream_idle_timeout: Origin server took more than the idle timeout configured to respond to the request. 
+* **stream_idle_timeout**: Origin server took more than the idle timeout configured to respond to the request. 
 
  - Increase the idle timeout on the HTTP LB.
 
-* upstream_response_timeout: Origin server took more time than the timeout configured on the route in the Loadbalancer. 
+* **upstream_response_timeout**: Origin server took more time than the timeout configured on the route in the Loadbalancer. 
 
  - Increase the timeout in the miscellaneous options of the route (default 30 seconds)
 
  .. note:: Note that this response code may be seen due to TCP Connection timeout towards the upstream. It will happen in case ""route"" timeout has a lower value than ""connectionTimeout"" configured on the ""cluster"" "
-
-
 
 Other Errors
 ------------
