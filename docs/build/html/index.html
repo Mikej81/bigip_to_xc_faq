@@ -728,11 +728,11 @@ If origin is not there WAF blocks the request. Check how the POST or PUT request
 <section id="id6">
 <h2>404 Errors<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>route_not_found</strong>: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration),
-SNI at Origin Server config is wrong</p></li>
+<li><p><strong>route_not_found</strong>: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration).</p></li>
 </ul>
 <blockquote>
 <div><ul class="simple">
+<li><p>SNI at Origin Server config is wrong.</p></li>
 <li><p>The request fails because authority does not route match.</p></li>
 <li><p>There is not match for host header www.example.com OR match condition in any of the route objects.</p></li>
 <li><p>Requests to the LB’s CNAME with either the exact or wildcard domain names are allowed. Others are returned a 404.</p></li>
@@ -973,7 +973,7 @@ the response.</p></li>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-04 17:08:02.
+      Last updated on 2024-06-04 17:23:21.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

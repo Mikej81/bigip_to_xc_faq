@@ -804,15 +804,15 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
 404 Errors
 ----------
 
-* **route_not_found**: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration), 
-  SNI at Origin Server config is wrong									
+* **route_not_found**: XC did not find a route or domain that matches current config. It is possible that there is no route match (misconfiguration).
 
- * The request fails because authority does not route match. 									
- * There is not match for host header www.example.com OR match condition in any of the route objects. 									
- * Requests to the LB's CNAME with either the exact or wildcard domain names are allowed. Others are returned a 404. 									
- * An incoming request to a HTTP LB will be rejected with a 404 error and req_id if the incoming Host header does not match any of:									
-   * The values configured under Domains								
-   * The CNAME record value for the virtual host, e.g. ves-io-<random-string>.ac.vh.volterra.us								
+ * SNI at Origin Server config is wrong.
+ * The request fails because authority does not route match.
+ * There is not match for host header www.example.com OR match condition in any of the route objects. 
+ * Requests to the LB's CNAME with either the exact or wildcard domain names are allowed. Others are returned a 404.
+ * An incoming request to a HTTP LB will be rejected with a 404 error and req_id if the incoming Host header does not match any of:
+   * The values configured under Domains
+   * The CNAME record value for the virtual host, e.g. ves-io-<random-string>.ac.vh.volterra.us
 
 503 Errors
 ----------
@@ -852,11 +852,11 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
 
 * **upstream_reset_before_response_started{protocol_error}**: 
 
-  - Check if the http response headers from the origin-server have any invalid field names. Query to the origin-server directly via curl or something equivalent.																
+  - Check if the http response headers from the origin-server have any invalid field names. Query to the origin-server directly via curl or something equivalent.
     Usually indicates that XC is seeing an error in one of the http-headers of the response from the server. We would need to see the http-headers that the origin-server 
-    is responding with to identify the issue.												
+    is responding with to identify the issue.
   - In one of the scenarios, it was seen that the origin-server may have a total of more than 100 headers(mostly duplciate headers), which XC will treat as failure parsing 
-    the response.																
+    the response.
 
 * **upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111}**: No TCP SYN-ACKs seen for the TCP connection attempts to the endpoints. 
 
