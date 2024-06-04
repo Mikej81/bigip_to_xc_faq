@@ -196,7 +196,9 @@ Monitors to Health Checks
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the Upstream (Origin Server) is still using HTTP/1.1 or is a BIG-IP using HTTP/1.1, then it may be a good idea to include the previously 
-mentioned Connection header.  An example of the JSON you can paste into XC is below.
+mentioned Connection header. The Connection general header controls whether the network connection stays open after the current transaction finishes. 
+If the value sent is keep-alive, the connection is persistent and not closed, allowing for subsequent requests to the same server to be done.
+Since this is for a Monitor/Health Check, its a good practice to close the connection. An example of the JSON you can paste into XC is below.
 
 .. code-block:: json
    
@@ -225,6 +227,8 @@ mentioned Connection header.  An example of the JSON you can paste into XC is be
       "jitter_percent": 30
       }
    }
+
+This is just an example and should be modified for specific scenarios. 
 
 
 SNAT
