@@ -735,8 +735,12 @@ If you decide to enable VRRP for a cluster, the following should be evaluated.
   hypervisor, even if an interface is uninitialized on the system. 
 
 
-* Starting from VMware ESXI 6.7, Promiscuous Mode can be replaced by MAC Learning in a supported environment, that is, Promiscuous Mode can be set to Reject when MAC Learning is enabled on the vSwitch on which BIGIP's VM is part of that network. The MAC Learning feature is supported only on Distributed Virtual (DV) Port groups.
-  When configuring traffic-group MAC masquerading for BIG-IP Virtual Edition (VE) on Microsoft Hyper-V servers, you will need to enable MAC address spoofing for the BIG-IP VMs in order for MAC masquerading to work properly.
+* Starting from VMware ESXI 6.7, Promiscuous Mode can be replaced by MAC Learning in a supported environment, 
+  that is, Promiscuous Mode can be set to Reject when MAC Learning is enabled on the vSwitch on which Customer Edge 
+  VM is part of that network. The MAC Learning feature is supported only on Distributed Virtual (DV) Port groups.
+
+* When configuring VRRP/Multicast for Customer Edge on Microsoft Hyper-V servers, 
+  you will need to enable MAC address spoofing for the Customer Edge VMs in order for VRRP to work properly.
 
 
 * To verify multicast is enabled issue the following command from each node in the Customer Edge Cluster.

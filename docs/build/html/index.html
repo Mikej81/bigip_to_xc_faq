@@ -662,8 +662,11 @@ interface usage after you enable promiscuous mode. All packets are mirrored to a
 portgroup or vSwitch on which promiscuous mode is enabled. For each interface in the vSwitch or portgroup,
 an additional hypervisor CPU is required to copy these packets. This can lead to CPU exhaustion for the
 hypervisor, even if an interface is uninitialized on the system.</p></li>
-<li><p>Starting from VMware ESXI 6.7, Promiscuous Mode can be replaced by MAC Learning in a supported environment, that is, Promiscuous Mode can be set to Reject when MAC Learning is enabled on the vSwitch on which BIGIP’s VM is part of that network. The MAC Learning feature is supported only on Distributed Virtual (DV) Port groups.
-When configuring traffic-group MAC masquerading for BIG-IP Virtual Edition (VE) on Microsoft Hyper-V servers, you will need to enable MAC address spoofing for the BIG-IP VMs in order for MAC masquerading to work properly.</p></li>
+<li><p>Starting from VMware ESXI 6.7, Promiscuous Mode can be replaced by MAC Learning in a supported environment,
+that is, Promiscuous Mode can be set to Reject when MAC Learning is enabled on the vSwitch on which Customer Edge
+VM is part of that network. The MAC Learning feature is supported only on Distributed Virtual (DV) Port groups.</p></li>
+<li><p>When configuring VRRP/Multicast for Customer Edge on Microsoft Hyper-V servers,
+you will need to enable MAC address spoofing for the Customer Edge VMs in order for VRRP to work properly.</p></li>
 <li><p>To verify multicast is enabled issue the following command from each node in the Customer Edge Cluster.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>execcli<span class="w"> </span>vifdump<span class="w"> </span>-i<span class="w"> </span><span class="m">15</span><span class="w"> </span>-nnve<span class="w"> </span>vrrp<span class="w"> </span>and<span class="w"> </span>not<span class="w"> </span>host<span class="w"> </span><span class="o">[</span>ip-of-ce-node<span class="o">]</span>
 </pre></div>
@@ -791,7 +794,7 @@ When configuring traffic-group MAC masquerading for BIG-IP Virtual Edition (VE) 
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-04 15:11:33.
+      Last updated on 2024-06-04 15:28:45.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
