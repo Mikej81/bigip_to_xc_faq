@@ -192,6 +192,41 @@ Timeouts can be configured in a a number of locations in the XC Console.
 
    Origin Timeout.
 
+Monitors to Health Checks
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the Upstream (Origin Server) is still using HTTP/1.1 or is a BIG-IP using HTTP/1.1, then it may be a good idea to include the previously 
+mentioned Connection header.  An example of the JSON you can paste into XC is below.
+
+.. code-block:: json
+   
+   {
+   "metadata": {
+      "name": "example",
+      "disable": false
+   },
+   "spec": {
+      "http_health_check": {
+      "use_origin_server_name": {},
+      "path": "/",
+      "use_http2": false,
+      "headers": {
+         "Connection": "Close"
+      },
+      "expected_status_codes": [
+         "200",
+         "302"
+      ]
+      },
+      "timeout": 3,
+      "interval": 15,
+      "unhealthy_threshold": 1,
+      "healthy_threshold": 3,
+      "jitter_percent": 30
+      }
+   }
+
+
 SNAT
 ^^^^
 
@@ -721,7 +756,7 @@ architectures.
 Similar to BIG-IP in VMWare or HyperV environments, there are a couple configs to be aware of.
 
 VRRP in a Hypervisor
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 If you decide to enable VRRP for a cluster, the following should be evaluated to ensure multicast is properly enabled.
 

@@ -200,6 +200,38 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 </figcaption>
 </figure>
 </section>
+<section id="monitors-to-health-checks">
+<h3>Monitors to Health Checks<a class="headerlink" href="#monitors-to-health-checks" title="Link to this heading">¶</a></h3>
+<p>If the Upstream (Origin Server) is still using HTTP/1.1 or is a BIG-IP using HTTP/1.1, then it may be a good idea to include the previously
+mentioned Connection header.  An example of the JSON you can paste into XC is below.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;disable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">},</span>
+<span class="nt">&quot;spec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;http_health_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;use_origin_server_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">   </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;use_http2&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Connection&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Close&quot;</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;expected_status_codes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;200&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;302&quot;</span>
+<span class="w">   </span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;timeout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;unhealthy_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;healthy_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;jitter_percent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 <section id="snat">
 <h3>SNAT<a class="headerlink" href="#snat" title="Link to this heading">¶</a></h3>
 <p>Distributed Cloud is a SaaS Platform.  BIG-IP is not.  Some applications may be configured to accept client source for persistence or other purposes.  Since the traffic will be proxied, applications been to be enabled for a more modern approach.</p>
@@ -649,9 +681,8 @@ and will extend the F5 Global Fabric to the edge location for use in multi-cloud
 <p>Customer Edge Clustering differs from BIG-IP in that it is based on Kubernetes, and requires different
 architectures.</p>
 <p>Similar to BIG-IP in VMWare or HyperV environments, there are a couple configs to be aware of.</p>
-</section>
 <section id="vrrp-in-a-hypervisor">
-<h2>VRRP in a Hypervisor<a class="headerlink" href="#vrrp-in-a-hypervisor" title="Link to this heading">¶</a></h2>
+<h3>VRRP in a Hypervisor<a class="headerlink" href="#vrrp-in-a-hypervisor" title="Link to this heading">¶</a></h3>
 <p>If you decide to enable VRRP for a cluster, the following should be evaluated to ensure multicast is properly enabled.</p>
 <ul>
 <li><p>You must set the virtual switch’s Forged Transmits and Promiscuous Mode settings to Accept. (These settings are
@@ -673,6 +704,7 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
 </div>
 </li>
 </ul>
+</section>
 </section>
 </section>
 <section id="troubleshooting">
@@ -726,6 +758,7 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
 <li><a class="reference internal" href="#ltm-as-upstream-origin">LTM as Upstream / Origin</a><ul>
 <li><a class="reference internal" href="#http-1-1-http-2">HTTP/1.1 &amp; HTTP/2</a></li>
 <li><a class="reference internal" href="#http-keep-alive-connection-headers">HTTP Keep-Alive &amp; Connection Headers</a></li>
+<li><a class="reference internal" href="#monitors-to-health-checks">Monitors to Health Checks</a></li>
 <li><a class="reference internal" href="#snat">SNAT</a></li>
 </ul>
 </li>
@@ -768,8 +801,10 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
 </li>
 <li><a class="reference internal" href="#customer-edge">Customer Edge</a><ul>
 <li><a class="reference internal" href="#sizing">Sizing</a></li>
-<li><a class="reference internal" href="#clustering-and-high-availability">Clustering and High availability</a></li>
+<li><a class="reference internal" href="#clustering-and-high-availability">Clustering and High availability</a><ul>
 <li><a class="reference internal" href="#vrrp-in-a-hypervisor">VRRP in a Hypervisor</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
@@ -794,7 +829,7 @@ you will need to enable MAC address spoofing for the Customer Edge VMs in order 
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-04 15:39:41.
+      Last updated on 2024-06-04 15:57:51.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
