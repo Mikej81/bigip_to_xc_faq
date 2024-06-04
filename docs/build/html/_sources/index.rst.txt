@@ -794,6 +794,8 @@ Troubleshooting
 503 Errors
 ----------
 
+In some cases, for troubleshooting, I can help to turn off XC Default Error Messages and allow errors directly from the Upstream.
+
 * cluster_not_found: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug
 
 * upstream_reset_before_response_started{connection}: 
@@ -813,6 +815,26 @@ Troubleshooting
 * upstream_reset_before_response_started {connection_failure, TLS_error, OPENSSL_internal, Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS 
   handshake failure.
 
+* upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:WRONG_VERSION_NUMBER}: Check if SSL negotiation is working with the endpoint by doing a curl to the endpoint via https directly, 
+  and ensure the proper version protocol is selected.
+
+* upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:CERTIFICATE_VERIFY_FAILED}: The certificate offered by the server was validated and that validation failed. 
+
+ - In the Origin pool TLS config, skip the verification.
+ - In the Origin pool TLS config, Use a custom CA list.
+
+* upstream_reset_before_response_started{connection termination}: The upstream server is closing the connection.
+
+ - It is possible that the upstream server is overloaded by the requests and unable to handle it. Check response time value.
+ - It is possible that on the server, the http idle timeout can be lesser than the idle-timeout on the origin-pool. It is strongly recommended that the origin-pool idle-timeout be configured to be less than that on the server.
+
+* upstream_reset_before_response_started{protocol_error}: 
+
+  - Check if the http response headers from the origin-server have any invalid field names. Query to the origin-server directly via curl or something equivalent.																
+    Usually indicates that XC is seeing an error in one of the http-headers of the response from the server. We would need to see the http-headers that the origin-server 
+    is responding with to identify the issue.												
+  - In one of the scenarios, it was seen that the origin-server may have a total of more than 100 headers(mostly duplciate headers), which XC will treat as failure parsing 
+    the response.																
 
 * Refused to execute script from 'https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. 
 
