@@ -741,9 +741,9 @@ If you decide to enable VRRP for a cluster, the following should be evaluated.
 
 * To verify multicast is enabled issue the following command from each node in the Customer Edge Cluster.
 
-.. code-block:: bash
-
-   execcli vifdump -i 15 -nnve vrrp and not host [ip-of-ce-node]
+  .. code-block:: bash
+  
+     execcli vifdump -i 15 -nnve vrrp and not host [ip-of-ce-node]
 
 Troubleshooting
 ===============
