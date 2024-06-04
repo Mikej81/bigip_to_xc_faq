@@ -798,35 +798,44 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
 
 * cluster_not_found: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug
 
+
 * upstream_reset_before_response_started{connection}: 
 
  - One common reason would be that the firewalls would not have allow listed Regional Edge public IPs, to reach upstream(s). https://docs.cloud.f5.com/docs/reference/network-cloud-ref
  - Other common reason is related to connection failure after X amount of seconds the connection timeout. Try to increase the connection timeout at origin pool to a higher value 
    to overcome this.
 
+
 * no_healthy_upstream: Health check on the origin pool has failed. Check health check config and the expected response codes, as well as allowed IPs.
+
 
 * via_upstream: The upstream server has generated this error code. Analysis has to be done on the endpoint. Another recommendation in such cases is to take a pcap from 
   client to origin server and see the details of the request.
 
+
 * remote_reset: Can happen if the server does not correctly work with the http(1.1 or 2). Curl to the endpoint directly and see what http version works for the request and 
   configure accordingly.
+
 
 * upstream_reset_before_response_started {connection_failure, TLS_error, OPENSSL_internal, Connection_reset_by_peer}: If any TLS error is seen like this, it indicates a TLS 
   handshake failure.
 
+
 * upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:WRONG_VERSION_NUMBER}: Check if SSL negotiation is working with the endpoint by doing a curl to the endpoint via https directly, 
   and ensure the proper version protocol is selected.
+
 
 * upstream_reset_before_response_started{connection_failure, TLS_error, OPENSSL_internal:CERTIFICATE_VERIFY_FAILED}: The certificate offered by the server was validated and that validation failed. 
 
  - In the Origin pool TLS config, skip the verification.
  - In the Origin pool TLS config, Use a custom CA list.
 
+
 * upstream_reset_before_response_started{connection termination}: The upstream server is closing the connection.
 
  - It is possible that the upstream server is overloaded by the requests and unable to handle it. Check response time value.
  - It is possible that on the server, the http idle timeout can be lesser than the idle-timeout on the origin-pool. It is strongly recommended that the origin-pool idle-timeout be configured to be less than that on the server.
+
 
 * upstream_reset_before_response_started{protocol_error}: 
 
@@ -835,6 +844,7 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
     is responding with to identify the issue.												
   - In one of the scenarios, it was seen that the origin-server may have a total of more than 100 headers(mostly duplciate headers), which XC will treat as failure parsing 
     the response.																
+
 
 * Refused to execute script from 'https://exampl.com/Errors/GlobalExceptionHandler.aspx?aspxerrorpath=/WebResource.axd' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. 
 
