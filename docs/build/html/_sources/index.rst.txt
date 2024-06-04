@@ -878,7 +878,8 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
 
  - Increase the timeout in the miscellaneous options of the route (default 30 seconds)
 
- .. note:: Note that this response code may be seen due to TCP Connection timeout towards the upstream. It will happen in case ""route"" timeout has a lower value than ""connectionTimeout"" configured on the ""cluster"" "
+ .. note:: Note that this response code may be seen due to TCP Connection timeout towards the upstream. It will happen in cases where the route timeout has a lower value 
+    than connection timeout configured on the upstream origin pool.
 
 Other Errors
 ------------
