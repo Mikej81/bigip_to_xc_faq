@@ -814,10 +814,18 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
    * The values configured under Domains
    * The CNAME record value for the virtual host, e.g. ves-io-<random-string>.ac.vh.volterra.us
 
+408 Errors
+----------
+
+* **rsp_code_details=request_overall_timeout**: check if there is slow_ddos_mitigation with request_timeout configured. 
+
 503 Errors
 ----------
 
-* **cluster_not_found**: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug
+* **cluster_not_found**: XC did not find an endpoint to send upstream. 
+
+  - It is possible that there was no route match (misconfiguration)
+  - If using a k8s service as upstream, its possible the service name is wrong.
 
 * **upstream_reset_before_response_started{connection}**: 
 
@@ -849,7 +857,6 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
  - It is possible that the upstream server is overloaded by the requests and unable to handle it. Check response time value.
  - It is possible that on the server, the http idle timeout can be lesser than the idle-timeout on the origin-pool. It is strongly recommended that the origin-pool idle-timeout be configured to be less than that on the server.
 
-
 * **upstream_reset_before_response_started{protocol_error}**: 
 
   - Check if the http response headers from the origin-server have any invalid field names. Query to the origin-server directly via curl or something equivalent.
@@ -866,6 +873,8 @@ In some cases, for troubleshooting, I can help to turn off XC Default Error Mess
 
  - Match the connection idle timeout between XC origin pool and Server. [Keep XC origin pool idle timeout a few seconds lesser than than the server timeout].
  - Apply retry policy for 5xx error. Packet capture if the issue still persists after applying above config changes.
+
+* **upstream_reset_before_response_started{remote_refused_stream_reset}**: This error currently requires a tcpdump to troubleshoot.
 
 504 Errors
 ----------
@@ -892,15 +901,29 @@ Other Errors
      :width: 700px
      :align: center
 
+Important Request Log Fields
+----------------------------
+
+* **time_to_last_downstream_tx_byte**: Interval between the first downstream byte received and the last downstream byte sent.		
+* **time_to_first_downstream_tx_byte**: Interval between the first downstream byte received and the first downstream byte sent.		
+* **time_to_last_upstream_rx_byte**: Interval between the first downstream byte received and the last upstream byte received		
+* **time_to_first_upstream_rx_byte**: Interval between the first downstream byte received and the first upstream byte received ( time it takes to start receiving a response)		
+* **time_to_first_upstream_tx_byte**: Interval between the first downstream byte received and the first upstream byte sent		
+* **time_to_last_upstream_tx_byte**: Interval between the first downstream byte received and the last upstream byte sent		
+* **duration_with_data_tx_delay = time_to_last_downstream_tx_byte - time_to_first_upstream_tx_byte**: Basically indicates how much "time" its inside XC LB to do processing of the request/response ( like eg WAF , API detection , service policy , Bot detection etc if enabled ) + time upstream spent to process		
+* **duration_with_no_data_tx_delay = time_to_first_downstream_tx_byte - time_to_first_upstream_tx_byte**: Similar to duration_with_data_tx_delay , except that reference is taken from the moment first byte is sent to client		
+
 Terminology
 ===========
 
+* AWAF: Advanced Web Application Firewall
+
 * Downstream: Client Side Connection (Source)
+
+* SNAT: Source Network Address Translation
 
 * Upstream: Server Side Connection (Origin)
 
 * WAAP: Web Application & API Protection
 
-* AWAF: Advanced Web Application Firewall
-
-* SNAT: Source Network Address Translation
+* XC: F5 Distributed Cloud

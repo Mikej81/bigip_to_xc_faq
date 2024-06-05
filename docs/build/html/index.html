@@ -178,25 +178,25 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 </div>
 <p>Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.</p>
 <p>Timeouts can be configured in a a number of locations in the XC Console.</p>
-<figure class="align-center" id="id9">
+<figure class="align-center" id="id10">
 <a class="reference internal image-reference" href="_images/lb_timeout.png"><img alt="_images/lb_timeout.png" src="_images/lb_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
-<figure class="align-center" id="id10">
-<a class="reference internal image-reference" href="_images/route_timeout.png"><img alt="_images/route_timeout.png" src="_images/route_timeout.png" style="width: 500px;" />
-</a>
-<figcaption>
-<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <figure class="align-center" id="id11">
+<a class="reference internal image-reference" href="_images/route_timeout.png"><img alt="_images/route_timeout.png" src="_images/route_timeout.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id12">
 <a class="reference internal image-reference" href="_images/origin_timeout.png"><img alt="_images/origin_timeout.png" src="_images/origin_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -243,8 +243,8 @@ Since this is for a Monitor/Health Check, its a good practice to close the conne
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id12">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id12" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id13" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -743,9 +743,20 @@ If origin is not there WAF blocks the request. Check how the POST or PUT request
 </div></blockquote>
 </section>
 <section id="id7">
-<h2>503 Errors<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<h2>408 Errors<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><strong>cluster_not_found</strong>: XC did not find an endpoint to send upstream. It is possible that there was no route match (misconfiguration) or a bug</p></li>
+<li><p><strong>rsp_code_details=request_overall_timeout</strong>: check if there is slow_ddos_mitigation with request_timeout configured.</p></li>
+</ul>
+</section>
+<section id="id8">
+<h2>503 Errors<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>cluster_not_found</strong>: XC did not find an endpoint to send upstream.</p>
+<ul>
+<li><p>It is possible that there was no route match (misconfiguration)</p></li>
+<li><p>If using a k8s service as upstream, its possible the service name is wrong.</p></li>
+</ul>
+</li>
 <li><p><strong>upstream_reset_before_response_started{connection}</strong>:</p></li>
 </ul>
 <blockquote>
@@ -808,9 +819,12 @@ the response.</p></li>
 <li><p>Apply retry policy for 5xx error. Packet capture if the issue still persists after applying above config changes.</p></li>
 </ul>
 </div></blockquote>
+<ul class="simple">
+<li><p><strong>upstream_reset_before_response_started{remote_refused_stream_reset}</strong>: This error currently requires a tcpdump to troubleshoot.</p></li>
+</ul>
 </section>
-<section id="id8">
-<h2>504 Errors<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h2>504 Errors<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>stream_idle_timeout</strong>: Origin server took more than the idle timeout configured to respond to the request.</p></li>
 </ul>
@@ -843,15 +857,29 @@ than connection timeout configured on the upstream origin pool.</p>
 </li>
 </ul>
 </section>
+<section id="important-request-log-fields">
+<h2>Important Request Log Fields<a class="headerlink" href="#important-request-log-fields" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>time_to_last_downstream_tx_byte</strong>: Interval between the first downstream byte received and the last downstream byte sent.</p></li>
+<li><p><strong>time_to_first_downstream_tx_byte</strong>: Interval between the first downstream byte received and the first downstream byte sent.</p></li>
+<li><p><strong>time_to_last_upstream_rx_byte</strong>: Interval between the first downstream byte received and the last upstream byte received</p></li>
+<li><p><strong>time_to_first_upstream_rx_byte</strong>: Interval between the first downstream byte received and the first upstream byte received ( time it takes to start receiving a response)</p></li>
+<li><p><strong>time_to_first_upstream_tx_byte</strong>: Interval between the first downstream byte received and the first upstream byte sent</p></li>
+<li><p><strong>time_to_last_upstream_tx_byte</strong>: Interval between the first downstream byte received and the last upstream byte sent</p></li>
+<li><p><strong>duration_with_data_tx_delay = time_to_last_downstream_tx_byte - time_to_first_upstream_tx_byte</strong>: Basically indicates how much “time” its inside XC LB to do processing of the request/response ( like eg WAF , API detection , service policy , Bot detection etc if enabled ) + time upstream spent to process</p></li>
+<li><p><strong>duration_with_no_data_tx_delay = time_to_first_downstream_tx_byte - time_to_first_upstream_tx_byte</strong>: Similar to duration_with_data_tx_delay , except that reference is taken from the moment first byte is sent to client</p></li>
+</ul>
+</section>
 </section>
 <section id="terminology">
 <h1>Terminology<a class="headerlink" href="#terminology" title="Link to this heading">¶</a></h1>
 <ul class="simple">
+<li><p>AWAF: Advanced Web Application Firewall</p></li>
 <li><p>Downstream: Client Side Connection (Source)</p></li>
+<li><p>SNAT: Source Network Address Translation</p></li>
 <li><p>Upstream: Server Side Connection (Origin)</p></li>
 <li><p>WAAP: Web Application &amp; API Protection</p></li>
-<li><p>AWAF: Advanced Web Application Firewall</p></li>
-<li><p>SNAT: Source Network Address Translation</p></li>
+<li><p>XC: F5 Distributed Cloud</p></li>
 </ul>
 </section>
 
@@ -950,9 +978,11 @@ than connection timeout configured on the upstream origin pool.</p>
 <li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
 <li><a class="reference internal" href="#errors">403 Errors</a></li>
 <li><a class="reference internal" href="#id6">404 Errors</a></li>
-<li><a class="reference internal" href="#id7">503 Errors</a></li>
-<li><a class="reference internal" href="#id8">504 Errors</a></li>
+<li><a class="reference internal" href="#id7">408 Errors</a></li>
+<li><a class="reference internal" href="#id8">503 Errors</a></li>
+<li><a class="reference internal" href="#id9">504 Errors</a></li>
 <li><a class="reference internal" href="#other-errors">Other Errors</a></li>
+<li><a class="reference internal" href="#important-request-log-fields">Important Request Log Fields</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#terminology">Terminology</a></li>
@@ -977,7 +1007,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-04 18:22:55.
+      Last updated on 2024-06-05 08:57:31.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
