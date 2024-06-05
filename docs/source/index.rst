@@ -247,7 +247,7 @@ The following ports can not be used when advertising services on a Customer Edge
    :header-rows: 0
 
    * - 22
-     - 53 
+     - 53 *Check Note*
    * - 68
      - 323
    * - 500
@@ -287,6 +287,7 @@ The following ports can not be used when advertising services on a Customer Edge
    * - 28000 - 32767 (volterra)
      - 28000 - 32767 (kubernetes) 
 
+.. note:: When using a Custom VIP/IP on the Customer Edge, is is possible to advertise / listen on TCP/UDP 53.
 
 SNAT Pooling
 ------------------
