@@ -247,7 +247,7 @@ The following ports can not be used when advertising services on a Customer Edge
    :header-rows: 0
 
    * - 22
-     - 53 *Check Note*
+     - 53 **Check Note**
    * - 68
      - 323
    * - 500
