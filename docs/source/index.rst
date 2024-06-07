@@ -2,7 +2,7 @@
    sphinx-quickstart on Fri Apr 26 17:06:53 2024.
 
 .. meta::
-   :description: F5 BIG-IP to Distributed Cloud Conversion Guide and Tipcs
+   :description: F5 BIG-IP to Distributed Cloud Conversion Guide and Tips
    :keywords: BIG-IP, Conversion, Distributed Cloud, WAAP, API, Proxy Protocol
 
 BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips
