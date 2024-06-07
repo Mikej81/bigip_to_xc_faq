@@ -501,6 +501,23 @@ be configured under Distributed Cloud Origin Pool Settings.
 
    Origin Pool Miscellaneous Config.
 
+TCP Passthrough Load Balancer
+-----------------------------
+
+To create a load balancer for TLS passthrough, ensure that you do not configure TLS on the Load Balancer, or the Origin Pool.  You can still use SNI on the Load Balancer.
+
+.. figure:: ../images/passthrough1.png
+   :width: 700px
+   :align: center
+
+   TLS Passthrough Load Balancer Config
+
+.. figure:: ../images/passthrough2.png
+   :width: 700px
+   :align: center
+
+   TLS Passthrough Origin Pool Config
+
 Websockets
 ----------
 
