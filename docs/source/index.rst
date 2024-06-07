@@ -11,17 +11,25 @@ BIG-IP To Distributed Cloud Conversion Frequently Asked Questions and Tips
 Disclaimer
 ==========
 
-Please note that this FAQ document is intended as a general guide and is not exhaustive. While we strive to provide accurate and up-to-date information, the rapidly evolving nature of cloud technologies means that specific details may change over time. Therefore, this guide should not be considered a substitute for professional advice or detailed consultation relevant to your specific circumstances.
+Please note that this FAQ document is intended as a general guide and is not exhaustive. 
+While we strive to provide accurate and up-to-date information, the rapidly evolving nature of 
+F5 Distributed Cloud means that specific details may change over time. Therefore, this guide 
+should not be considered a substitute for professional advice or detailed consultation relevant 
+to your specific circumstances.
 
 .. _introduction:
 
 Introduction
 ============
 
-This semi-comprehensive guide is designed to streamline your migration from F5 BIG-IP to F5 Distributed Cloud.  This document aims to address frequently asked questions that arise during the migration process, offering clear, concise answers and practical insights to ensure a smooth transition.
+This semi-comprehensive guide is designed to streamline your migration from F5 BIG-IP to F5 Distributed Cloud.  
+This document aims to address frequently asked questions that arise during the migration process, offering clear, 
+concise answers and practical insights to ensure a smooth transition.
 
 Contributing
 ============
+
+Please feel free to submit issues or updates to the repo listed below.  
 
 Github: https://github.com/Mikej81/bigip_to_xc_faq
 
@@ -30,7 +38,9 @@ Github: https://github.com/Mikej81/bigip_to_xc_faq
 Disqualifiers
 =============
 
-This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. There are service chaining use-cases that could still work, or ways to implement policies to redirect traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.
+This is a list of use-cases that can be used to immediately disqualify a migration, with some caveats. 
+There are service chaining use-cases that could still work, or ways to implement policies to redirect 
+traffic to a BIG-IP instead of XC, or ways to inline NGINX into XC to carry out many of the same effects.
 
 #. Access services that require Match Across.  https://my.f5.com/manage/s/article/K5837
 
