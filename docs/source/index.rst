@@ -158,7 +158,7 @@ This will be a very small example of a manual migration to XC.  As we can see be
 We can see how pool1 would map to XC DNS LB Pool in the figure below.
 
 .. figure:: ../images/dns1.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 BIG-IP DNS Wide IP to XC DNS LB Record
@@ -182,7 +182,7 @@ As we can see below from the output of ```list gtm wideip``` we have one Wide-IP
 We can see how the Wide-IP for example.domain.com would map to XC in the figure below.
 
 .. figure:: ../images/dns2.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 Zonerunner & DNSExpress
