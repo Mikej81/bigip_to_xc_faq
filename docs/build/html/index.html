@@ -141,6 +141,11 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 </li>
 <li><p>OneConnect</p></li>
 </ol>
+<section id="tcp-option-28-and-proxy-protocol">
+<h2>TCP Option 28 and Proxy Protocol<a class="headerlink" href="#tcp-option-28-and-proxy-protocol" title="Link to this heading">¶</a></h2>
+<p>While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
+be configured under Distributed Cloud Origin Pool Settings.</p>
+</section>
 </section>
 <section id="dns">
 <h1>DNS<a class="headerlink" href="#dns" title="Link to this heading">¶</a></h1>
@@ -920,7 +925,10 @@ than connection timeout configured on the upstream origin pool.</p>
 <li><a class="reference internal" href="#id4">Policy Supervisor</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a></li>
+<li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a><ul>
+<li><a class="reference internal" href="#tcp-option-28-and-proxy-protocol">TCP Option 28 and Proxy Protocol</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#dns">DNS</a></li>
 <li><a class="reference internal" href="#apm-to-distributed-cloud-service-chaining">APM to Distributed Cloud (Service Chaining)</a><ul>
 <li><a class="reference internal" href="#api-security">API Security</a></li>
@@ -1012,7 +1020,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-05 15:50:18.
+      Last updated on 2024-06-07 08:45:43.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
