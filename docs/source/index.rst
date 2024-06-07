@@ -290,7 +290,7 @@ In the next dialog select the Service Policy created above and click apply. Then
 
 Here is an example of a Security Policy configuration in JSON.
 
-.. code-block:: JSON
+.. code::
 
 {
   "metadata": {
