@@ -141,11 +141,6 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 </li>
 <li><p>OneConnect</p></li>
 </ol>
-<section id="tcp-option-28-and-proxy-protocol">
-<h2>TCP Option 28 and Proxy Protocol<a class="headerlink" href="#tcp-option-28-and-proxy-protocol" title="Link to this heading">¶</a></h2>
-<p>While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
-be configured under Distributed Cloud Origin Pool Settings.</p>
-</section>
 </section>
 <section id="dns">
 <h1>DNS<a class="headerlink" href="#dns" title="Link to this heading">¶</a></h1>
@@ -162,6 +157,11 @@ be configured under Distributed Cloud Origin Pool Settings.</p>
 <section id="ltm-to-load-balancing-as-a-service">
 <h1>LTM to Load Balancing as a Service<a class="headerlink" href="#ltm-to-load-balancing-as-a-service" title="Link to this heading">¶</a></h1>
 <p>Most services will move to Distributed Cloud fairly easily.</p>
+<section id="tcp-option-28-and-proxy-protocol">
+<h2>TCP Option 28 and Proxy Protocol<a class="headerlink" href="#tcp-option-28-and-proxy-protocol" title="Link to this heading">¶</a></h2>
+<p>While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
+be configured under Distributed Cloud Origin Pool Settings.</p>
+</section>
 <section id="websockets">
 <h2>Websockets<a class="headerlink" href="#websockets" title="Link to this heading">¶</a></h2>
 <p>Websockets are supported for load balancing in Distributed Cloud.</p>
@@ -925,16 +925,14 @@ than connection timeout configured on the upstream origin pool.</p>
 <li><a class="reference internal" href="#id4">Policy Supervisor</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a><ul>
-<li><a class="reference internal" href="#tcp-option-28-and-proxy-protocol">TCP Option 28 and Proxy Protocol</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a></li>
 <li><a class="reference internal" href="#dns">DNS</a></li>
 <li><a class="reference internal" href="#apm-to-distributed-cloud-service-chaining">APM to Distributed Cloud (Service Chaining)</a><ul>
 <li><a class="reference internal" href="#api-security">API Security</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
+<li><a class="reference internal" href="#tcp-option-28-and-proxy-protocol">TCP Option 28 and Proxy Protocol</a></li>
 <li><a class="reference internal" href="#websockets">Websockets</a></li>
 <li><a class="reference internal" href="#ltm-as-upstream-origin">LTM as Upstream / Origin</a><ul>
 <li><a class="reference internal" href="#http-1-1-http-2">HTTP/1.1 &amp; HTTP/2</a></li>
@@ -1020,7 +1018,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-07 08:45:43.
+      Last updated on 2024-06-07 08:47:04.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

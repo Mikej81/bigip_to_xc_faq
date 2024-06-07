@@ -126,12 +126,6 @@ There are very few disqualifiers for LTM.
 
 #. OneConnect
 
-TCP Option 28 and Proxy Protocol
---------------------------------
-
-While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
-be configured under Distributed Cloud Origin Pool Settings.
-
 DNS
 ===
 
@@ -151,6 +145,12 @@ LTM to Load Balancing as a Service
 ==================================
 
 Most services will move to Distributed Cloud fairly easily.
+
+TCP Option 28 and Proxy Protocol
+--------------------------------
+
+While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
+be configured under Distributed Cloud Origin Pool Settings.
 
 Websockets
 ----------
