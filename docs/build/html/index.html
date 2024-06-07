@@ -146,6 +146,54 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <h1>DNS<a class="headerlink" href="#dns" title="Link to this heading">¶</a></h1>
 <p>Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The base format for zones is JSON/YAML, and in some cases cannot be directly imported.</p>
 <p>For BIG-IP DNS Wide IP configurations, there is not an automated way to migrate today, so this will be a manual process.</p>
+<section id="big-ip-dns-pool-to-xc-dns-lb-pool">
+<h2>BIG-IP DNS Pool to XC DNS LB Pool<a class="headerlink" href="#big-ip-dns-pool-to-xc-dns-lb-pool" title="Link to this heading">¶</a></h2>
+<p>This will be a very small example of a manual migration to XC.  As we can see below from the output of <code class="docutils literal notranslate"><span class="pre">`list</span> <span class="pre">gtm</span> <span class="pre">pool`</span></code> we have two pools with single members.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gtm</span> <span class="n">pool</span> <span class="n">a</span> <span class="n">pool1</span> <span class="p">{</span>
+    <span class="n">members</span> <span class="p">{</span>
+        <span class="n">BIG</span><span class="o">-</span><span class="n">IPVE16</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">local</span><span class="p">:</span><span class="o">/</span><span class="n">Common</span><span class="o">/</span><span class="n">vip1</span> <span class="p">{</span>
+            <span class="n">member</span><span class="o">-</span><span class="n">order</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">gtm</span> <span class="n">pool</span> <span class="n">a</span> <span class="n">pool2</span> <span class="p">{</span>
+    <span class="n">members</span> <span class="p">{</span>
+        <span class="n">BIG</span><span class="o">-</span><span class="n">IPVE16</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">local</span><span class="p">:</span><span class="o">/</span><span class="n">Common</span><span class="o">/</span><span class="n">vip2</span> <span class="p">{</span>
+            <span class="n">member</span><span class="o">-</span><span class="n">order</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We can see how pool1 would map to XC DNS LB Pool in the figure below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/dns1.png"><img alt="_images/dns1.png" src="_images/dns1.png" style="width: 500px;" />
+</a>
+</figure>
+</section>
+<section id="big-ip-dns-wide-ip-to-xc-dns-lb-record">
+<h2>BIG-IP DNS Wide IP to XC DNS LB Record<a class="headerlink" href="#big-ip-dns-wide-ip-to-xc-dns-lb-record" title="Link to this heading">¶</a></h2>
+<p>As we can see below from the output of <code class="docutils literal notranslate"><span class="pre">`list</span> <span class="pre">gtm</span> <span class="pre">wideip`</span></code> we have one Wide-IP with two pools.  There arent any rules here to dig in to, but those can be configured in XC as needed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gtm</span> <span class="n">wideip</span> <span class="n">a</span> <span class="n">example</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">com</span> <span class="p">{</span>
+    <span class="n">pools</span> <span class="p">{</span>
+        <span class="n">pool1</span> <span class="p">{</span>
+            <span class="n">order</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="n">pool2</span> <span class="p">{</span>
+            <span class="n">order</span> <span class="mi">1</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We can see how the Wide-IP for example.domain.com would map to XC in the figure below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/dns2.png"><img alt="_images/dns2.png" src="_images/dns2.png" style="width: 500px;" />
+</a>
+</figure>
+</section>
+<section id="zonerunner-dnsexpress">
+<h2>Zonerunner &amp; DNSExpress<a class="headerlink" href="#zonerunner-dnsexpress" title="Link to this heading">¶</a></h2>
 <p>For BIG-IP DNS Host Zones, it is possible to migrate a couple ways.</p>
 <ul class="simple">
 <li><p>The named files which can be imported into F5 Distributed Cloud DNS.</p>
@@ -163,6 +211,7 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <p class="admonition-title">Note</p>
 <p>Since this document is focused on BIG-IP to Distributed Cloud, BIND import is out of scope, but importing named/BIND9 zone files is also supported.</p>
 </div>
+</section>
 </section>
 <section id="apm-to-distributed-cloud-service-chaining">
 <h1>APM to Distributed Cloud (Service Chaining)<a class="headerlink" href="#apm-to-distributed-cloud-service-chaining" title="Link to this heading">¶</a></h1>
@@ -954,7 +1003,12 @@ than connection timeout configured on the upstream origin pool.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#local-traffic-manager">Local Traffic Manager</a></li>
-<li><a class="reference internal" href="#dns">DNS</a></li>
+<li><a class="reference internal" href="#dns">DNS</a><ul>
+<li><a class="reference internal" href="#big-ip-dns-pool-to-xc-dns-lb-pool">BIG-IP DNS Pool to XC DNS LB Pool</a></li>
+<li><a class="reference internal" href="#big-ip-dns-wide-ip-to-xc-dns-lb-record">BIG-IP DNS Wide IP to XC DNS LB Record</a></li>
+<li><a class="reference internal" href="#zonerunner-dnsexpress">Zonerunner &amp; DNSExpress</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#apm-to-distributed-cloud-service-chaining">APM to Distributed Cloud (Service Chaining)</a><ul>
 <li><a class="reference internal" href="#api-security">API Security</a></li>
 </ul>
@@ -1046,7 +1100,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-07 10:00:38.
+      Last updated on 2024-06-07 11:43:33.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

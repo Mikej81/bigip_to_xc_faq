@@ -133,6 +133,61 @@ Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The 
 
 For BIG-IP DNS Wide IP configurations, there is not an automated way to migrate today, so this will be a manual process.
 
+BIG-IP DNS Pool to XC DNS LB Pool
+---------------------------------
+
+This will be a very small example of a manual migration to XC.  As we can see below from the output of ```list gtm pool``` we have two pools with single members.
+
+.. code::
+
+   gtm pool a pool1 {
+       members {
+           BIG-IPVE16-A.local:/Common/vip1 {
+               member-order 0
+           }
+       }
+   }
+   gtm pool a pool2 {
+       members {
+           BIG-IPVE16-A.local:/Common/vip2 {
+               member-order 0
+           }
+       }
+   }
+
+We can see how pool1 would map to XC DNS LB Pool in the figure below.
+
+.. figure:: ../images/dns1.png
+   :width: 500px
+   :align: center
+
+BIG-IP DNS Wide IP to XC DNS LB Record
+--------------------------------------
+
+As we can see below from the output of ```list gtm wideip``` we have one Wide-IP with two pools.  There arent any rules here to dig in to, but those can be configured in XC as needed.
+
+.. code::
+
+   gtm wideip a example.domain.com {
+       pools {
+           pool1 {
+               order 0
+           }
+           pool2 {
+               order 1
+           }
+       }
+   }
+
+We can see how the Wide-IP for example.domain.com would map to XC in the figure below.
+
+.. figure:: ../images/dns2.png
+   :width: 500px
+   :align: center
+
+Zonerunner & DNSExpress
+-----------------------
+
 For BIG-IP DNS Host Zones, it is possible to migrate a couple ways.
 
 * The named files which can be imported into F5 Distributed Cloud DNS.
