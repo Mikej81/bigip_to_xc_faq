@@ -292,197 +292,197 @@ Here is an example of a Security Policy configuration in JSON.
 
 .. code::
 
-{
-  "metadata": {
-    "name": "positive-security-api-sample",
-    "namespace": "[NAMESPACE]",
-    "labels": {},
-    "annotations": {},
-    "disable": false
-  },
-  "spec": {
-    "algo": "FIRST_MATCH",
-    "any_server": {},
-    "rule_list": {
-      "rules": [
-        {
-          "metadata": {
-            "name": "allow-api",
-            "disable": false
-          },
-          "spec": {
-            "action": "ALLOW",
-            "any_client": {},
-            "label_matcher": {
-              "keys": []
+   {
+   "metadata": {
+      "name": "positive-security-api-sample",
+      "namespace": "[NAMESPACE]",
+      "labels": {},
+      "annotations": {},
+      "disable": false
+   },
+   "spec": {
+      "algo": "FIRST_MATCH",
+      "any_server": {},
+      "rule_list": {
+         "rules": [
+         {
+            "metadata": {
+               "name": "allow-api",
+               "disable": false
             },
-            "headers": [],
-            "query_params": [],
-            "http_method": {
-              "methods": [],
-              "invert_matcher": false
+            "spec": {
+               "action": "ALLOW",
+               "any_client": {},
+               "label_matcher": {
+               "keys": []
+               },
+               "headers": [],
+               "query_params": [],
+               "http_method": {
+               "methods": [],
+               "invert_matcher": false
+               },
+               "any_ip": {},
+               "any_asn": {},
+               "api_group_matcher": {
+               "match": [
+                  "ves-io-api-def-[OAS-DEFINITION-NAME]-shared-all-operations"
+               ],
+               "invert_matcher": false
+               },
+               "additional_api_group_matchers": [],
+               "body_matcher": {
+               "exact_values": [],
+               "regex_values": [],
+               "transformers": []
+               },
+               "arg_matchers": [],
+               "cookie_matchers": [],
+               "waf_action": {
+               "none": {}
+               },
+               "domain_matcher": {
+               "exact_values": [],
+               "regex_values": [],
+               "transformers": []
+               },
+               "rate_limiter": [],
+               "forwarding_class": [],
+               "scheme": [],
+               "challenge_action": "DEFAULT_CHALLENGE",
+               "bot_action": {
+               "none": {}
+               },
+               "mum_action": {
+               "default": {}
+               },
+               "user_identity_matcher": {
+               "exact_values": [],
+               "regex_values": []
+               },
+               "segment_policy": {
+               "src_any": {}
+               },
+               "origin_server_subsets_action": {},
+               "jwt_claims": []
+            }
+         },
+         {
+            "metadata": {
+               "name": "allow-paths",
+               "disable": false
             },
-            "any_ip": {},
-            "any_asn": {},
-            "api_group_matcher": {
-              "match": [
-                "ves-io-api-def-[OAS-DEFINITION-NAME]-shared-all-operations"
-              ],
-              "invert_matcher": false
+            "spec": {
+               "action": "ALLOW",
+               "any_client": {},
+               "label_matcher": {
+               "keys": []
+               },
+               "headers": [],
+               "query_params": [],
+               "http_method": {
+               "methods": [],
+               "invert_matcher": false
+               },
+               "any_ip": {},
+               "any_asn": {},
+               "additional_api_group_matchers": [],
+               "body_matcher": {
+               "exact_values": [],
+               "regex_values": [],
+               "transformers": []
+               },
+               "arg_matchers": [],
+               "cookie_matchers": [],
+               "waf_action": {
+               "none": {}
+               },
+               "domain_matcher": {
+               "exact_values": [],
+               "regex_values": [],
+               "transformers": []
+               },
+               "rate_limiter": [],
+               "forwarding_class": [],
+               "scheme": [],
+               "challenge_action": "DEFAULT_CHALLENGE",
+               "bot_action": {
+               "none": {}
+               },
+               "mum_action": {
+               "default": {}
+               },
+               "user_identity_matcher": {
+               "exact_values": [],
+               "regex_values": []
+               },
+               "segment_policy": {
+               "src_any": {}
+               },
+               "origin_server_subsets_action": {},
+               "jwt_claims": []
+            }
+         },
+         {
+            "metadata": {
+               "name": "deny-all",
+               "disable": false
             },
-            "additional_api_group_matchers": [],
-            "body_matcher": {
-              "exact_values": [],
-              "regex_values": [],
-              "transformers": []
-            },
-            "arg_matchers": [],
-            "cookie_matchers": [],
-            "waf_action": {
-              "none": {}
-            },
-            "domain_matcher": {
-              "exact_values": [],
-              "regex_values": [],
-              "transformers": []
-            },
-            "rate_limiter": [],
-            "forwarding_class": [],
-            "scheme": [],
-            "challenge_action": "DEFAULT_CHALLENGE",
-            "bot_action": {
-              "none": {}
-            },
-            "mum_action": {
-              "default": {}
-            },
-            "user_identity_matcher": {
-              "exact_values": [],
-              "regex_values": []
-            },
-            "segment_policy": {
-              "src_any": {}
-            },
-            "origin_server_subsets_action": {},
-            "jwt_claims": []
-          }
-        },
-        {
-          "metadata": {
-            "name": "allow-paths",
-            "disable": false
-          },
-          "spec": {
-            "action": "ALLOW",
-            "any_client": {},
-            "label_matcher": {
-              "keys": []
-            },
-            "headers": [],
-            "query_params": [],
-            "http_method": {
-              "methods": [],
-              "invert_matcher": false
-            },
-            "any_ip": {},
-            "any_asn": {},
-            "additional_api_group_matchers": [],
-            "body_matcher": {
-              "exact_values": [],
-              "regex_values": [],
-              "transformers": []
-            },
-            "arg_matchers": [],
-            "cookie_matchers": [],
-            "waf_action": {
-              "none": {}
-            },
-            "domain_matcher": {
-              "exact_values": [],
-              "regex_values": [],
-              "transformers": []
-            },
-            "rate_limiter": [],
-            "forwarding_class": [],
-            "scheme": [],
-            "challenge_action": "DEFAULT_CHALLENGE",
-            "bot_action": {
-              "none": {}
-            },
-            "mum_action": {
-              "default": {}
-            },
-            "user_identity_matcher": {
-              "exact_values": [],
-              "regex_values": []
-            },
-            "segment_policy": {
-              "src_any": {}
-            },
-            "origin_server_subsets_action": {},
-            "jwt_claims": []
-          }
-        },
-        {
-          "metadata": {
-            "name": "deny-all",
-            "disable": false
-          },
-          "spec": {
-            "action": "DENY",
-            "any_client": {},
-            "label_matcher": {
-              "keys": []
-            },
-            "headers": [],
-            "query_params": [],
-            "http_method": {
-              "methods": [],
-              "invert_matcher": false
-            },
-            "any_ip": {},
-            "any_asn": {},
-            "additional_api_group_matchers": [],
-            "body_matcher": {
-              "exact_values": [],
-              "regex_values": [],
-              "transformers": []
-            },
-            "arg_matchers": [],
-            "cookie_matchers": [],
-            "waf_action": {
-              "none": {}
-            },
-            "domain_matcher": {
-              "exact_values": [],
-              "regex_values": [],
-              "transformers": []
-            },
-            "rate_limiter": [],
-            "forwarding_class": [],
-            "scheme": [],
-            "challenge_action": "DEFAULT_CHALLENGE",
-            "bot_action": {
-              "none": {}
-            },
-            "mum_action": {
-              "default": {}
-            },
-            "user_identity_matcher": {
-              "exact_values": [],
-              "regex_values": []
-            },
-            "segment_policy": {
-              "src_any": {}
-            },
-            "origin_server_subsets_action": {},
-            "jwt_claims": []
-          }
-        }
-      ]
-    }
-  }
-}
+            "spec": {
+               "action": "DENY",
+               "any_client": {},
+               "label_matcher": {
+               "keys": []
+               },
+               "headers": [],
+               "query_params": [],
+               "http_method": {
+               "methods": [],
+               "invert_matcher": false
+               },
+               "any_ip": {},
+               "any_asn": {},
+               "additional_api_group_matchers": [],
+               "body_matcher": {
+               "exact_values": [],
+               "regex_values": [],
+               "transformers": []
+               },
+               "arg_matchers": [],
+               "cookie_matchers": [],
+               "waf_action": {
+               "none": {}
+               },
+               "domain_matcher": {
+               "exact_values": [],
+               "regex_values": [],
+               "transformers": []
+               },
+               "rate_limiter": [],
+               "forwarding_class": [],
+               "scheme": [],
+               "challenge_action": "DEFAULT_CHALLENGE",
+               "bot_action": {
+               "none": {}
+               },
+               "mum_action": {
+               "default": {}
+               },
+               "user_identity_matcher": {
+               "exact_values": [],
+               "regex_values": []
+               },
+               "segment_policy": {
+               "src_any": {}
+               },
+               "origin_server_subsets_action": {},
+               "jwt_claims": []
+            }
+         }
+         ]
+      }
+   }
+   }
 
 LTM to Load Balancing as a Service
 ==================================
