@@ -139,7 +139,8 @@ We covered the disqualifiers, but there are some that will work fine, like servi
 API Security
 ------------
 
-So secure...
+One of the major differences in API security between BIG-IP and Distributed Cloud is the addition of API Discovery.  Today, the policies from BIG-IP will not transfer.  However,
+if the current implemention utilized an OpenAPI Spec, that spec can be imported into Distributed Cloud.
 
 LTM to Load Balancing as a Service
 ==================================
@@ -168,7 +169,9 @@ https://f5cloud.zendesk.com/hc/en-us/articles/18944650914327-How-to-configure-We
 LTM as Upstream / Origin
 ------------------------
 
-Occasionally there is a use-case where instead of a Customer Edge on-premises, you want to continue to use a BIG-IP.  This will work as long as proper preparations are made.
+Occasionally there is a use-case where instead of a Customer Edge on-premises, you want to continue to use a BIG-IP.  This will work,
+as long as proper preparations are made.  In many situations there may be custom (or even using default) TCP and HTTP Profiles which can be
+problematic when moving to a SaaS based solution.
 
 HTTP/1.1 & HTTP/2
 ^^^^^^^^^^^^^^^^^
