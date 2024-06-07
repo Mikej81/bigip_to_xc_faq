@@ -131,6 +131,20 @@ DNS
 
 Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The base format for zones is JSON/YAML, and in some cases cannot be directly imported.
 
+For BIG-IP DNS Wide IP configurations, there is not an automated way to migrate today, so this will be a manual process.
+
+For BIG-IP DNS Host Zones, it is possible to migrate a couple ways.
+
+* The named files which can be imported into F5 Distributed Cloud DNS.
+
+  * You can follow instructions Here:  https://my.f5.com/manage/s/article/K000132496
+
+* If you plan to maintain the BIG-IP DNS as Primary, and use Distributed Cloud as Secondary, AXFR is supported.
+
+  * You can follow instructions here:  https://f5cloud.zendesk.com/hc/en-us/articles/7980850576535-How-to-set-up-F5-Distributed-Cloud-DNS-as-Secondary-for-BIG-IP-DNS-GTM
+
+.. note:: Since this document is focused on BIG-IP to Distributed Cloud, BIND import is out of scope, but importing named/BIND9 zone files is also supported.
+
 APM to Distributed Cloud (Service Chaining)
 ===========================================
 

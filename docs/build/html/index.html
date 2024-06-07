@@ -145,6 +145,24 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <section id="dns">
 <h1>DNS<a class="headerlink" href="#dns" title="Link to this heading">¶</a></h1>
 <p>Distributed Cloud DNS supports Primary, Secondary, and DNS Load Balancing.  The base format for zones is JSON/YAML, and in some cases cannot be directly imported.</p>
+<p>For BIG-IP DNS Wide IP configurations, there is not an automated way to migrate today, so this will be a manual process.</p>
+<p>For BIG-IP DNS Host Zones, it is possible to migrate a couple ways.</p>
+<ul class="simple">
+<li><p>The named files which can be imported into F5 Distributed Cloud DNS.</p>
+<ul>
+<li><p>You can follow instructions Here:  <a class="reference external" href="https://my.f5.com/manage/s/article/K000132496">https://my.f5.com/manage/s/article/K000132496</a></p></li>
+</ul>
+</li>
+<li><p>If you plan to maintain the BIG-IP DNS as Primary, and use Distributed Cloud as Secondary, AXFR is supported.</p>
+<ul>
+<li><p>You can follow instructions here:  <a class="reference external" href="https://f5cloud.zendesk.com/hc/en-us/articles/7980850576535-How-to-set-up-F5-Distributed-Cloud-DNS-as-Secondary-for-BIG-IP-DNS-GTM">https://f5cloud.zendesk.com/hc/en-us/articles/7980850576535-How-to-set-up-F5-Distributed-Cloud-DNS-as-Secondary-for-BIG-IP-DNS-GTM</a></p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since this document is focused on BIG-IP to Distributed Cloud, BIND import is out of scope, but importing named/BIND9 zone files is also supported.</p>
+</div>
 </section>
 <section id="apm-to-distributed-cloud-service-chaining">
 <h1>APM to Distributed Cloud (Service Chaining)<a class="headerlink" href="#apm-to-distributed-cloud-service-chaining" title="Link to this heading">¶</a></h1>
@@ -1028,7 +1046,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-07 08:57:01.
+      Last updated on 2024-06-07 10:00:38.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
