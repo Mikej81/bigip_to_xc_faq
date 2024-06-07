@@ -223,6 +223,267 @@ API Security
 One of the major differences in API security between BIG-IP and Distributed Cloud is the addition of API Discovery.  Today, the policies from BIG-IP will not transfer.  However,
 if the current implemention utilized an OpenAPI Spec, that spec can be imported into Distributed Cloud.
 
+One note for API Validation in Distributed Cloud is that the current "fall through" options (when a request does not match a defined path in the open api spec file used for 
+validation), do not include a block option, only allow or custom to define specific blocked endpoints.
+
+.. figure:: ../images/validation_fall_through_options.png
+   :width: 700px
+   :align: center
+
+This does not mean that a positive security model based on the spec file can't be used, but some additional configuration is required. Presuming the spec file for the API
+is uploaded to Distributed Cloud, we can leverage the automatically created API groups with a Service Policy to create a positive security model.
+
+In Home > Web App & API Protection > [namespace] > Manage > API Management > API Definition the spec file is divided into two groups:
+ #. ...shared-all-operations
+ #. ...shared-base-urls
+
+The first group can be referenced in a Service Policy (https://docs.cloud.f5.com/docs/how-to/app-security/service-policy) as the match criteria to allow requests through. In 
+Home > Web App & API Protection > [namespace] > Manage > Service Policies > Service Policies create a new policy with a "Custom Rule List" and click configure:
+
+.. figure:: ../images/service_policy_create.png
+   :width: 700px
+   :align: center
+
+In the next dialog, click "Add Item" to begin configuring the allow criteria rule. One rule will be created for the API Group, other rules for paths not in the spec (if required), and a deny all rule.
+For the first rule, give it a name and set "Action" to Allow. Then in the "API Group Matcher" area, click "configure" as such:
+
+.. figure:: ../images/configure_api_matcher_allow.png
+   :width: 900px
+   :align: center
+
+Select the ves-io-api-def-[APP NAME]-shared-all-operations group learned from the api definition file for that api and then click apply.
+
+.. figure:: ../images/api-matcher-selection.png
+   :width: 700px
+   :align: center
+
+Back in the rule dialog, click apply to go back to the rule list dialog. Click add item for the next rule. HTTP paths can be added if neccessary with an "allow" action defined at the top:
+
+.. figure:: ../images/http-uri-path-matcher.png
+   :width: 700px
+   :align: center
+
+This can include explicit paths, path prefixes, regex paths, or combinations.
+
+Finally, an explicit deny-all rule at the end of the rule list makes this a positive security model. Leave the match criteria as their defaults:
+
+.. figure:: ../images/deny-all.png
+   :width: 500px
+   :align: center
+
+The final rule list should have the api matcher rule and http uri path rule above the deny-all rull:
+
+.. figure:: ../images/final-rule-list.png
+   :width: 500px
+   :align: center
+
+Click the apply button to return to the main Service Policy dialog and provide a name and click the Save and Exit Button. After the Service Policy is created it can be added
+to the HTTP Load Balancer in the Common Security Controls section. Go to Home > Web App & API Protection > NAMESPACE > Manage > Load Balancers, select the triple dots under Actions, 
+and click Manage Configuration. In the following dialog click Edit Configuration in the top right corner. Scroll to Common Security Controls and select the "Apply Specified Service 
+Policies" option and click "Edit Configuration." 
+
+.. figure:: ../images/add-sp-to-lb.png
+   :width: 400px
+   :align: center
+
+In the next dialog select the Service Policy created above and click apply. Then Save and Exit the HTTP Load Balancer config dialog.
+
+Here is an example of a Security Policy configuration in JSON.
+
+.. code-block:: JSON
+
+{
+  "metadata": {
+    "name": "positive-security-api-sample",
+    "namespace": "[NAMESPACE]",
+    "labels": {},
+    "annotations": {},
+    "disable": false
+  },
+  "spec": {
+    "algo": "FIRST_MATCH",
+    "any_server": {},
+    "rule_list": {
+      "rules": [
+        {
+          "metadata": {
+            "name": "allow-api",
+            "disable": false
+          },
+          "spec": {
+            "action": "ALLOW",
+            "any_client": {},
+            "label_matcher": {
+              "keys": []
+            },
+            "headers": [],
+            "query_params": [],
+            "http_method": {
+              "methods": [],
+              "invert_matcher": false
+            },
+            "any_ip": {},
+            "any_asn": {},
+            "api_group_matcher": {
+              "match": [
+                "ves-io-api-def-[OAS-DEFINITION-NAME]-shared-all-operations"
+              ],
+              "invert_matcher": false
+            },
+            "additional_api_group_matchers": [],
+            "body_matcher": {
+              "exact_values": [],
+              "regex_values": [],
+              "transformers": []
+            },
+            "arg_matchers": [],
+            "cookie_matchers": [],
+            "waf_action": {
+              "none": {}
+            },
+            "domain_matcher": {
+              "exact_values": [],
+              "regex_values": [],
+              "transformers": []
+            },
+            "rate_limiter": [],
+            "forwarding_class": [],
+            "scheme": [],
+            "challenge_action": "DEFAULT_CHALLENGE",
+            "bot_action": {
+              "none": {}
+            },
+            "mum_action": {
+              "default": {}
+            },
+            "user_identity_matcher": {
+              "exact_values": [],
+              "regex_values": []
+            },
+            "segment_policy": {
+              "src_any": {}
+            },
+            "origin_server_subsets_action": {},
+            "jwt_claims": []
+          }
+        },
+        {
+          "metadata": {
+            "name": "allow-paths",
+            "disable": false
+          },
+          "spec": {
+            "action": "ALLOW",
+            "any_client": {},
+            "label_matcher": {
+              "keys": []
+            },
+            "headers": [],
+            "query_params": [],
+            "http_method": {
+              "methods": [],
+              "invert_matcher": false
+            },
+            "any_ip": {},
+            "any_asn": {},
+            "additional_api_group_matchers": [],
+            "body_matcher": {
+              "exact_values": [],
+              "regex_values": [],
+              "transformers": []
+            },
+            "arg_matchers": [],
+            "cookie_matchers": [],
+            "waf_action": {
+              "none": {}
+            },
+            "domain_matcher": {
+              "exact_values": [],
+              "regex_values": [],
+              "transformers": []
+            },
+            "rate_limiter": [],
+            "forwarding_class": [],
+            "scheme": [],
+            "challenge_action": "DEFAULT_CHALLENGE",
+            "bot_action": {
+              "none": {}
+            },
+            "mum_action": {
+              "default": {}
+            },
+            "user_identity_matcher": {
+              "exact_values": [],
+              "regex_values": []
+            },
+            "segment_policy": {
+              "src_any": {}
+            },
+            "origin_server_subsets_action": {},
+            "jwt_claims": []
+          }
+        },
+        {
+          "metadata": {
+            "name": "deny-all",
+            "disable": false
+          },
+          "spec": {
+            "action": "DENY",
+            "any_client": {},
+            "label_matcher": {
+              "keys": []
+            },
+            "headers": [],
+            "query_params": [],
+            "http_method": {
+              "methods": [],
+              "invert_matcher": false
+            },
+            "any_ip": {},
+            "any_asn": {},
+            "additional_api_group_matchers": [],
+            "body_matcher": {
+              "exact_values": [],
+              "regex_values": [],
+              "transformers": []
+            },
+            "arg_matchers": [],
+            "cookie_matchers": [],
+            "waf_action": {
+              "none": {}
+            },
+            "domain_matcher": {
+              "exact_values": [],
+              "regex_values": [],
+              "transformers": []
+            },
+            "rate_limiter": [],
+            "forwarding_class": [],
+            "scheme": [],
+            "challenge_action": "DEFAULT_CHALLENGE",
+            "bot_action": {
+              "none": {}
+            },
+            "mum_action": {
+              "default": {}
+            },
+            "user_identity_matcher": {
+              "exact_values": [],
+              "regex_values": []
+            },
+            "segment_policy": {
+              "src_any": {}
+            },
+            "origin_server_subsets_action": {},
+            "jwt_claims": []
+          }
+        }
+      ]
+    }
+  }
+}
+
 LTM to Load Balancing as a Service
 ==================================
 
