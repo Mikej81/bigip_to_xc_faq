@@ -248,6 +248,24 @@ be configured under Distributed Cloud Origin Pool Settings.</p>
 </figcaption>
 </figure>
 </section>
+<section id="tcp-passthrough-load-balancer">
+<h2>TCP Passthrough Load Balancer<a class="headerlink" href="#tcp-passthrough-load-balancer" title="Link to this heading">¶</a></h2>
+<p>To create a load balancer for TLS passthrough, ensure that you do not configure TLS on the Load Balancer, or the Origin Pool.  You can still use SNI on the Load Balancer.</p>
+<figure class="align-center" id="id11">
+<a class="reference internal image-reference" href="_images/passthrough1.png"><img alt="_images/passthrough1.png" src="_images/passthrough1.png" style="width: 700px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">TLS Passthrough Load Balancer Config</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id12">
+<a class="reference internal image-reference" href="_images/passthrough2.png"><img alt="_images/passthrough2.png" src="_images/passthrough2.png" style="width: 700px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">TLS Passthrough Origin Pool Config</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 <section id="websockets">
 <h2>Websockets<a class="headerlink" href="#websockets" title="Link to this heading">¶</a></h2>
 <p>Websockets are supported for load balancing in Distributed Cloud.</p>
@@ -271,25 +289,25 @@ problematic when moving to a SaaS based solution.</p>
 </div>
 <p>Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.</p>
 <p>Timeouts can be configured in a a number of locations in the XC Console.</p>
-<figure class="align-center" id="id11">
+<figure class="align-center" id="id13">
 <a class="reference internal image-reference" href="_images/lb_timeout.png"><img alt="_images/lb_timeout.png" src="_images/lb_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<figure class="align-center" id="id12">
+<figure class="align-center" id="id14">
 <a class="reference internal image-reference" href="_images/route_timeout.png"><img alt="_images/route_timeout.png" src="_images/route_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<figure class="align-center" id="id13">
+<figure class="align-center" id="id15">
 <a class="reference internal image-reference" href="_images/origin_timeout.png"><img alt="_images/origin_timeout.png" src="_images/origin_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -336,8 +354,8 @@ Since this is for a Monitor/Health Check, its a good practice to close the conne
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id14">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id14" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id16" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -1026,6 +1044,7 @@ than connection timeout configured on the upstream origin pool.</p>
 </li>
 <li><a class="reference internal" href="#ltm-to-load-balancing-as-a-service">LTM to Load Balancing as a Service</a><ul>
 <li><a class="reference internal" href="#tcp-option-28-and-proxy-protocol">TCP Option 28 and Proxy Protocol</a></li>
+<li><a class="reference internal" href="#tcp-passthrough-load-balancer">TCP Passthrough Load Balancer</a></li>
 <li><a class="reference internal" href="#websockets">Websockets</a></li>
 <li><a class="reference internal" href="#ltm-as-upstream-origin">LTM as Upstream / Origin</a><ul>
 <li><a class="reference internal" href="#http-1-1-http-2">HTTP/1.1 &amp; HTTP/2</a></li>
@@ -1111,7 +1130,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-07 14:13:39.
+      Last updated on 2024-06-07 16:19:11.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
