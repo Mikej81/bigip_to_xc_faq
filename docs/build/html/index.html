@@ -159,8 +159,15 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <p>Most services will move to Distributed Cloud fairly easily.</p>
 <section id="tcp-option-28-and-proxy-protocol">
 <h2>TCP Option 28 and Proxy Protocol<a class="headerlink" href="#tcp-option-28-and-proxy-protocol" title="Link to this heading">¶</a></h2>
-<p>While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
+<p>While the BIG-IP supports TCP Option 28 to maintain client source ip, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
 be configured under Distributed Cloud Origin Pool Settings.</p>
+<figure class="align-center" id="id10">
+<a class="reference internal image-reference" href="_images/proxyprotocol1.png"><img alt="_images/proxyprotocol1.png" src="_images/proxyprotocol1.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Origin Pool Miscellaneous Config.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="websockets">
 <h2>Websockets<a class="headerlink" href="#websockets" title="Link to this heading">¶</a></h2>
@@ -183,25 +190,25 @@ be configured under Distributed Cloud Origin Pool Settings.</p>
 </div>
 <p>Since keep-alive and connection headers will be ignored, its important to evaluate timeouts from XC to BIG-IP and properly configure timeouts in the Load Balancer and Origin configurations.</p>
 <p>Timeouts can be configured in a a number of locations in the XC Console.</p>
-<figure class="align-center" id="id10">
+<figure class="align-center" id="id11">
 <a class="reference internal image-reference" href="_images/lb_timeout.png"><img alt="_images/lb_timeout.png" src="_images/lb_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
-</figcaption>
-</figure>
-<figure class="align-center" id="id11">
-<a class="reference internal image-reference" href="_images/route_timeout.png"><img alt="_images/route_timeout.png" src="_images/route_timeout.png" style="width: 500px;" />
-</a>
-<figcaption>
-<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Load Balancer Timeout.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <figure class="align-center" id="id12">
+<a class="reference internal image-reference" href="_images/route_timeout.png"><img alt="_images/route_timeout.png" src="_images/route_timeout.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Route Timeout.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id13">
 <a class="reference internal image-reference" href="_images/origin_timeout.png"><img alt="_images/origin_timeout.png" src="_images/origin_timeout.png" style="width: 500px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Origin Timeout.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -248,8 +255,8 @@ Since this is for a Monitor/Health Check, its a good practice to close the conne
 <section id="ltm-to-customer-edge">
 <h2>LTM to Customer Edge<a class="headerlink" href="#ltm-to-customer-edge" title="Link to this heading">¶</a></h2>
 <p>The following ports can not be used when advertising services on a Customer Edge.</p>
-<table class="docutils align-default" id="id13">
-<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id13" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">Reserved Ports</span><a class="headerlink" href="#id14" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -1018,7 +1025,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-07 08:47:04.
+      Last updated on 2024-06-07 08:52:32.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>

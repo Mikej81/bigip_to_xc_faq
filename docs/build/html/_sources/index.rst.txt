@@ -149,8 +149,14 @@ Most services will move to Distributed Cloud fairly easily.
 TCP Option 28 and Proxy Protocol
 --------------------------------
 
-While the BIG-IP supports TCP Option 28, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
+While the BIG-IP supports TCP Option 28 to maintain client source ip, due to never making it out of experimental, Distributed cloud went with Proxy Protocol.  This can
 be configured under Distributed Cloud Origin Pool Settings.
+
+.. figure:: ../images/proxyprotocol1.png
+   :width: 500px
+   :align: center
+
+   Origin Pool Miscellaneous Config.
 
 Websockets
 ----------
