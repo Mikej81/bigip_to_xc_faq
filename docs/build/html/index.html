@@ -231,6 +231,257 @@ Service Policies will cover traditional IP blocks as well as additional IP-Geo, 
 <h2>API Security<a class="headerlink" href="#api-security" title="Link to this heading">¶</a></h2>
 <p>One of the major differences in API security between BIG-IP and Distributed Cloud is the addition of API Discovery.  Today, the policies from BIG-IP will not transfer.  However,
 if the current implemention utilized an OpenAPI Spec, that spec can be imported into Distributed Cloud.</p>
+<p>One note for API Validation in Distributed Cloud is that the current “fall through” options (when a request does not match a defined path in the open api spec file used for
+validation), do not include a block option, only allow or custom to define specific blocked endpoints.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/validation_fall_through_options.png"><img alt="_images/validation_fall_through_options.png" src="_images/validation_fall_through_options.png" style="width: 700px;" />
+</a>
+</figure>
+<p>This does not mean that a positive security model based on the spec file can’t be used, but some additional configuration is required. Presuming the spec file for the API
+is uploaded to Distributed Cloud, we can leverage the automatically created API groups with a Service Policy to create a positive security model.</p>
+<dl class="simple">
+<dt>In Home &gt; Web App &amp; API Protection &gt; [namespace] &gt; Manage &gt; API Management &gt; API Definition the spec file is divided into two groups:</dt><dd><ol class="arabic simple">
+<li><p>…shared-all-operations</p></li>
+<li><p>…shared-base-urls</p></li>
+</ol>
+</dd>
+</dl>
+<p>The first group can be referenced in a Service Policy (<a class="reference external" href="https://docs.cloud.f5.com/docs/how-to/app-security/service-policy">https://docs.cloud.f5.com/docs/how-to/app-security/service-policy</a>) as the match criteria to allow requests through. In
+Home &gt; Web App &amp; API Protection &gt; [namespace] &gt; Manage &gt; Service Policies &gt; Service Policies create a new policy with a “Custom Rule List” and click configure:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/service_policy_create.png"><img alt="_images/service_policy_create.png" src="_images/service_policy_create.png" style="width: 700px;" />
+</a>
+</figure>
+<p>In the next dialog, click “Add Item” to begin configuring the allow criteria rule. One rule will be created for the API Group, other rules for paths not in the spec (if required), and a deny all rule.
+For the first rule, give it a name and set “Action” to Allow. Then in the “API Group Matcher” area, click “configure” as such:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/configure_api_matcher_allow.png"><img alt="_images/configure_api_matcher_allow.png" src="_images/configure_api_matcher_allow.png" style="width: 900px;" />
+</a>
+</figure>
+<p>Select the ves-io-api-def-[APP NAME]-shared-all-operations group learned from the api definition file for that api and then click apply.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/api-matcher-selection.png"><img alt="_images/api-matcher-selection.png" src="_images/api-matcher-selection.png" style="width: 700px;" />
+</a>
+</figure>
+<p>Back in the rule dialog, click apply to go back to the rule list dialog. Click add item for the next rule. HTTP paths can be added if neccessary with an “allow” action defined at the top:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/http-uri-path-matcher.png"><img alt="_images/http-uri-path-matcher.png" src="_images/http-uri-path-matcher.png" style="width: 700px;" />
+</a>
+</figure>
+<p>This can include explicit paths, path prefixes, regex paths, or combinations.</p>
+<p>Finally, an explicit deny-all rule at the end of the rule list makes this a positive security model. Leave the match criteria as their defaults:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/deny-all.png"><img alt="_images/deny-all.png" src="_images/deny-all.png" style="width: 500px;" />
+</a>
+</figure>
+<p>The final rule list should have the api matcher rule and http uri path rule above the deny-all rull:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/final-rule-list.png"><img alt="_images/final-rule-list.png" src="_images/final-rule-list.png" style="width: 500px;" />
+</a>
+</figure>
+<p>Click the apply button to return to the main Service Policy dialog and provide a name and click the Save and Exit Button. After the Service Policy is created it can be added
+to the HTTP Load Balancer in the Common Security Controls section. Go to Home &gt; Web App &amp; API Protection &gt; NAMESPACE &gt; Manage &gt; Load Balancers, select the triple dots under Actions,
+and click Manage Configuration. In the following dialog click Edit Configuration in the top right corner. Scroll to Common Security Controls and select the “Apply Specified Service
+Policies” option and click “Edit Configuration.”</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/add-sp-to-lb.png"><img alt="_images/add-sp-to-lb.png" src="_images/add-sp-to-lb.png" style="width: 400px;" />
+</a>
+</figure>
+<p>In the next dialog select the Service Policy created above and click apply. Then Save and Exit the HTTP Load Balancer config dialog.</p>
+<p>Here is an example of a Security Policy configuration in JSON.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+   <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;positive-security-api-sample&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;namespace&quot;</span><span class="p">:</span> <span class="s2">&quot;[NAMESPACE]&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">{},</span>
+   <span class="s2">&quot;annotations&quot;</span><span class="p">:</span> <span class="p">{},</span>
+   <span class="s2">&quot;disable&quot;</span><span class="p">:</span> <span class="n">false</span>
+<span class="p">},</span>
+<span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="p">{</span>
+   <span class="s2">&quot;algo&quot;</span><span class="p">:</span> <span class="s2">&quot;FIRST_MATCH&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;any_server&quot;</span><span class="p">:</span> <span class="p">{},</span>
+   <span class="s2">&quot;rule_list&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;rules&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;allow-api&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;disable&quot;</span><span class="p">:</span> <span class="n">false</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;ALLOW&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;any_client&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;label_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;query_params&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;http_method&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;invert_matcher&quot;</span><span class="p">:</span> <span class="n">false</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;any_ip&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;any_asn&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;api_group_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;match&quot;</span><span class="p">:</span> <span class="p">[</span>
+               <span class="s2">&quot;ves-io-api-def-[OAS-DEFINITION-NAME]-shared-all-operations&quot;</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;invert_matcher&quot;</span><span class="p">:</span> <span class="n">false</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;additional_api_group_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;body_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;transformers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;arg_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;cookie_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;waf_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;domain_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;transformers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;rate_limiter&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;forwarding_class&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;challenge_action&quot;</span><span class="p">:</span> <span class="s2">&quot;DEFAULT_CHALLENGE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bot_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;mum_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;user_identity_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;segment_policy&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;src_any&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;origin_server_subsets_action&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;jwt_claims&quot;</span><span class="p">:</span> <span class="p">[]</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;allow-paths&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;disable&quot;</span><span class="p">:</span> <span class="n">false</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;ALLOW&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;any_client&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;label_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;query_params&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;http_method&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;invert_matcher&quot;</span><span class="p">:</span> <span class="n">false</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;any_ip&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;any_asn&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;additional_api_group_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;body_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;transformers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;arg_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;cookie_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;waf_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;domain_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;transformers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;rate_limiter&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;forwarding_class&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;challenge_action&quot;</span><span class="p">:</span> <span class="s2">&quot;DEFAULT_CHALLENGE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bot_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;mum_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;user_identity_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;segment_policy&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;src_any&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;origin_server_subsets_action&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;jwt_claims&quot;</span><span class="p">:</span> <span class="p">[]</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;deny-all&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;disable&quot;</span><span class="p">:</span> <span class="n">false</span>
+         <span class="p">},</span>
+         <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;DENY&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;any_client&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;label_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;query_params&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;http_method&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;invert_matcher&quot;</span><span class="p">:</span> <span class="n">false</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;any_ip&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;any_asn&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;additional_api_group_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;body_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;transformers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;arg_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;cookie_matchers&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;waf_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;domain_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;transformers&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;rate_limiter&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;forwarding_class&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;challenge_action&quot;</span><span class="p">:</span> <span class="s2">&quot;DEFAULT_CHALLENGE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bot_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;mum_action&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;user_identity_matcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exact_values&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;regex_values&quot;</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;segment_policy&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;src_any&quot;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;origin_server_subsets_action&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;jwt_claims&quot;</span><span class="p">:</span> <span class="p">[]</span>
+         <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="p">]</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="ltm-to-load-balancing-as-a-service">
@@ -1130,7 +1381,7 @@ than connection timeout configured on the upstream origin pool.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2024, Michael Coleman.
-      Last updated on 2024-06-07 16:19:11.
+      Last updated on 2024-06-07 19:18:18.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
